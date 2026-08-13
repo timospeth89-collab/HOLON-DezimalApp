@@ -17,3 +17,6 @@ xcuserdata/
 *.ipa
 *.dSYM.zip
 *.dSYM
+
+# Claude Code – maschinenlokale Einstellungen
+.claude/settings.local.json
