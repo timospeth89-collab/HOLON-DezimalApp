@@ -74,8 +74,16 @@ Installation älter als 5 Tage ist. Der LaunchAgent
 in `~/Library/Logs/DezimalApp-refresh.log`, bei Fehlern kommt zusätzlich eine
 Mitteilung.
 
-Damit das ohne Kabel funktioniert, muss das iPhone einmal in Xcode unter
-*Window → Devices and Simulators* mit **Connect via network** freigeschaltet werden.
+Die Installation läuft über WLAN. Ab Xcode 15 (CoreDevice) genügt dafür, dass das
+iPhone einmal per Kabel gekoppelt wurde — den früheren Haken *Connect via network*
+gibt es nicht mehr. Prüfen:
+
+```bash
+xcrun devicectl list devices
+```
+
+Steht dort `transportType: localNetwork`, ist das Gerät kabellos erreichbar.
+
 Zum Zeitpunkt des Laufs müssen Mac und iPhone im selben Netz sein, der Mac wach und
 angemeldet, das iPhone entsperrt. Klappt es nicht, versucht es der nächste Lauf
 6 Stunden später erneut — bei 5 Tagen Schwelle und 7 Tagen Ablauf bleiben rund
