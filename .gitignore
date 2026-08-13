@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+Icon?
+
+# iCloud
+.icloud
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
