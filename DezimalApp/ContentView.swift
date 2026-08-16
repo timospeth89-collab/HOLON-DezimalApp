@@ -44,8 +44,9 @@ struct ContentView: View {
 
             TextField("z. B. 53759", text: $input)
                 .keyboardType(.numberPad)
-                .font(.system(size: 34, weight: .semibold, design: .rounded))
+                .font(.system(size: 85, weight: .semibold, design: .rounded))
                 .monospacedDigit()
+                .minimumScaleFactor(0.4)
                 .focused($inputFocused)
                 .onChange(of: input) { _, newValue in
                     let digits = newValue.filter(\.isNumber)
@@ -83,11 +84,13 @@ struct ContentView: View {
 
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text("0x")
-                    .font(.system(size: 26, weight: .regular, design: .monospaced))
+                    .font(.system(size: 65, weight: .regular, design: .monospaced))
                     .foregroundStyle(.secondary)
                 Text(hex)
-                    .font(.system(size: 46, weight: .bold, design: .monospaced))
+                    .font(.system(size: 115, weight: .bold, design: .monospaced))
                     .foregroundStyle(.tint)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.4)
                 Spacer()
                 Button {
                     UIPasteboard.general.string = hex
