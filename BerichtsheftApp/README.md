@@ -51,6 +51,14 @@ Summenzeile, oben Jahres-Kacheln (Nächte, Hotel-€, PB-/HO-Tage).
 - `Berichtsheft_<Jahr>_Tage.csv` — alle Tageseinträge (Datum, Art, Tätigkeit, Ort)
 - `Berichtsheft_<Jahr>.json` — komplettes Datenbackup
 
+### Erinnerung
+
+Mo–Fr um 17:00 Uhr meldet sich die App per Mitteilung („Kurz eintragen: Was
+hast du heute gemacht — und wo?"). Nach dem ersten Walkthrough fragt sie
+einmal nach der Mitteilungs-Erlaubnis; der Schalter dazu sitzt im Tab
+„Belege". Rein lokale Notifications (fünf wiederholende Kalender-Trigger),
+kein Server nötig.
+
 ### 3. Belege
 Hier wählst du **einmalig** den iCloud-Drive-Ordner (z. B.
 `01_Jobs/008_Holon`). Die App legt darunter selbst

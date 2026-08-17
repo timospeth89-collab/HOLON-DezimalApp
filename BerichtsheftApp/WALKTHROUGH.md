@@ -55,6 +55,9 @@ Die App zeigt beim ersten Start einen Walkthrough. Danach:
    **Export** drücken → CSV + JSON liegen im iCloud-Ordner.
 4. **Tab „Woche"** — aktuelle CW prüfen; das ⚠︎ neben „Tage" wird zum ✓,
    sobald Mo–Fr alle 5 Tage ein Attribut haben.
+5. **Mitteilungen erlauben**, wenn die App nach dem Walkthrough fragt —
+   dann erinnert sie dich Mo–Fr um 17:00 Uhr ans Eintragen. Der Schalter
+   dazu (an/aus) sitzt im Tab „Belege".
 
 Bei den vorbefüllten Wochen habe ich die Tages-Verteilung (welcher Wochentag
 PB/HO/frei war) teils aus dem OneNote übernommen (CW14–19), teils plausibel

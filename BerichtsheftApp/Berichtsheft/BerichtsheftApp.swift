@@ -30,11 +30,17 @@ struct RootView: View {
         }
         .onAppear {
             if !walkthroughSeen { showWalkthrough = true }
+            Reminders.refresh()
         }
         .onReceive(NotificationCenter.default.publisher(for: .showWalkthrough)) { _ in
             showWalkthrough = true
         }
-        .sheet(isPresented: $showWalkthrough, onDismiss: { walkthroughSeen = true }) {
+        .sheet(isPresented: $showWalkthrough, onDismiss: {
+            walkthroughSeen = true
+            // Nach dem ersten Walkthrough einmal nach Mitteilungen fragen
+            // und die Mo–Fr-17-Uhr-Erinnerung aktivieren.
+            Reminders.promptOnceIfNeeded()
+        }) {
             WalkthroughView(isPresented: $showWalkthrough)
         }
     }

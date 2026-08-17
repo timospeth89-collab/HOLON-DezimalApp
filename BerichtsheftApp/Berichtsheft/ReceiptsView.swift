@@ -12,6 +12,7 @@ struct ReceiptsView: View {
     @State private var showFolderPicker = false
     @State private var previewURL: URL?
     @State private var errorMessage: String?
+    @State private var reminderOn = Reminders.isEnabled
 
     var body: some View {
         NavigationStack {
@@ -19,6 +20,7 @@ struct ReceiptsView: View {
                 VStack(spacing: 14) {
                     folderCard
                     routeCard
+                    reminderCard
                     filesCard
                 }
                 .padding(.horizontal)
@@ -139,6 +141,34 @@ struct ReceiptsView: View {
                 .foregroundStyle(Theme.secondaryText)
         }
         .card()
+    }
+
+    // MARK: Erinnerung
+
+    private var reminderCard: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Toggle(isOn: Binding(
+                get: { reminderOn },
+                set: { on in
+                    Reminders.setEnabled(on) { granted in
+                        reminderOn = granted
+                        if on && !granted {
+                            errorMessage = "Mitteilungen sind für Berichtsheft deaktiviert. In den iOS-Einstellungen → Berichtsheft → Mitteilungen erlauben und den Schalter erneut setzen."
+                        }
+                    }
+                }
+            )) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Erinnerung").font(.headline)
+                    Text("Mo–Fr um 17:00 Uhr: „Kurz eintragen: Was hast du heute gemacht — und wo?“")
+                        .font(.caption)
+                        .foregroundStyle(Theme.secondaryText)
+                }
+            }
+            .tint(Theme.green)
+        }
+        .card()
+        .onAppear { reminderOn = Reminders.isEnabled }
     }
 
     // MARK: Dateien

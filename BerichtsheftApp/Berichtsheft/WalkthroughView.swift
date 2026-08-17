@@ -21,7 +21,7 @@ struct WalkthroughView: View {
          "Pro Woche die einfachen Fahrten zählen (2 = hin + zurück).\n\nDie Strecke Weinbergstr. 27 ↔ Elsener Str. 95 trägst du einmal im Tab „Belege" ein — km stehen dann in Auswertung und Export."),
         ("icloud.fill",
          "Einrichten (einmalig)",
-         "1. Tab „Belege" → „Ordner wählen" → in iCloud Drive deinen Ordner 01_Jobs/008_Holon wählen. Die App legt SteuerHotelFahrtkosten/2026 selbst an.\n\n2. Darunter die einfache km-Strecke eintragen.\n\n3. Tab „Auswertung" → Export schreibt CSV (öffnet in Excel) + JSON-Backup in den Ordner."),
+         "1. Tab „Belege" → „Ordner wählen" → in iCloud Drive deinen Ordner 01_Jobs/008_Holon wählen. Die App legt SteuerHotelFahrtkosten/2026 selbst an.\n\n2. Darunter die einfache km-Strecke eintragen.\n\n3. Tab „Auswertung" → Export schreibt CSV (öffnet in Excel) + JSON-Backup in den Ordner.\n\n4. Gleich fragt die App nach Mitteilungen — dann erinnert sie dich Mo–Fr um 17 Uhr ans Eintragen (abschaltbar im Tab „Belege")."),
     ]
 
     var body: some View {
