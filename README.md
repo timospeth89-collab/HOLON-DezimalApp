@@ -1,3 +1,12 @@
+# HOLON-Apps
+
+Zwei iPhone-Apps (SwiftUI, HOLON-Look):
+
+- **DezimalApp** (`DezimalApp.xcodeproj`) — Dezimal → Hex-BitMask, siehe unten
+- **Berichtsheft** (`BerichtsheftApp/`) — Wochen-/Hotelabrechnung mit
+  Excel-Auswertung, CSV-Export und Beleg-Ablage in iCloud Drive,
+  siehe [BerichtsheftApp/README.md](BerichtsheftApp/README.md)
+
 # DezimalApp
 
 iPhone-App (SwiftUI), die die Rechnung aus `Software_VSM_Transitions_3_4_Lmo.xlsx` nachbildet:
