@@ -18,6 +18,7 @@ struct ReceiptsView: View {
             ScrollView {
                 VStack(spacing: 14) {
                     folderCard
+                    routeCard
                     filesCard
                 }
                 .padding(.horizontal)
@@ -103,6 +104,39 @@ struct ReceiptsView: View {
                       systemImage: "folder.badge.gearshape")
                     .font(.subheadline.bold())
             }
+        }
+        .card()
+    }
+
+    // MARK: Fahrtstrecke
+
+    private var routeCard: some View {
+        let settings = store.settingsBinding
+        return VStack(alignment: .leading, spacing: 8) {
+            Text("Fahrtstrecke").font(.headline)
+            HStack {
+                Text("Von").font(.caption).foregroundStyle(Theme.secondaryText).frame(width: 34, alignment: .leading)
+                TextField("Weinbergstr. 27", text: settings.from)
+                    .font(.subheadline)
+                    .textFieldStyle(.plain)
+            }
+            HStack {
+                Text("Nach").font(.caption).foregroundStyle(Theme.secondaryText).frame(width: 34, alignment: .leading)
+                TextField("Elsener Str. 95, Paderborn", text: settings.to)
+                    .font(.subheadline)
+                    .textFieldStyle(.plain)
+            }
+            HStack {
+                Text("km").font(.caption).foregroundStyle(Theme.secondaryText).frame(width: 34, alignment: .leading)
+                TextField("0", value: settings.kmOneWay, format: .number.precision(.fractionLength(0...1)))
+                    .keyboardType(.decimalPad)
+                    .frame(width: 80)
+                    .textFieldStyle(.roundedBorder)
+                Text("einfache Strecke").font(.caption).foregroundStyle(Theme.secondaryText)
+            }
+            Text("Einmal eintragen (z. B. aus Apple/Google Maps ablesen). Die km pro Woche = Fahrten × einfache Strecke, sichtbar in Auswertung und CSV-Export.")
+                .font(.caption2)
+                .foregroundStyle(Theme.secondaryText)
         }
         .card()
     }

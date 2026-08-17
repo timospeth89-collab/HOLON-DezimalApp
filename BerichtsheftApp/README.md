@@ -18,6 +18,16 @@ Pro Kalenderwoche 7 Tage (Mo–So), je Tag:
 
 Menü „Ausfüllen" setzt Mo–Fr auf einmal (PB-Woche, HO-Woche, Urlaub, EZ).
 
+**Prüfsumme:** Mo–Fr sollen immer 5 Tage ein Attribut haben. Neben „Tage"
+zeigt ein ✓ (5/5) bzw. ⚠︎ (z. B. 3/5) den Stand; in der Auswertung markiert
+eine ✓/⚠︎-Spalte jede Woche, im CSV-Export steht `Tage erfasst`.
+
+**Fahrten:** pro Woche die einfachen Fahrten zählen (2 = hin + zurück);
+beim Anlegen der ersten Buchung werden automatisch 2 vorgeschlagen. Die
+Strecke (Weinbergstr. 27 ↔ Elsener Str. 95, Paderborn) und die einfachen km
+trägst du einmal im Tab „Belege" ein — km = Fahrten × Strecke, sichtbar in
+Auswertung und Export.
+
 Dazu die **Hotelbuchungen** der Woche: Hotel, Nächte, Betrag. Mehrere
 unabhängige Buchungen pro CW sind möglich — die Position in der Liste ist der
 Index im Dateinamen. Über „Beleg (PDF) ablegen" wählst du die Rechnung aus
@@ -60,14 +70,23 @@ Gespeichert wird lokal als JSON (Application Support), unabhängig vom
 iCloud-Ordner — die App funktioniert also auch offline/ohne gewählten Ordner;
 nur Beleg-Ablage und Export brauchen ihn.
 
+Beim allerersten Start werden die 2026-Daten aus der bisherigen Excel
+(CW14–33, `Seed2026.json` im Bundle) vorbefüllt — die Wochensummen stimmen
+mit der Excel-Summenzeile überein. Beim ersten Start zeigt die App außerdem
+einen Walkthrough (über „?" im Tab „Woche" jederzeit wieder aufrufbar).
+
+Installation als Vorabversion: siehe [WALKTHROUGH.md](WALKTHROUGH.md).
+
 ## Aufbau
 
-- `Berichtsheft/Models.swift` — Wochen/Tage/Buchungen + ISO-KW-Helfer
-- `Berichtsheft/Store.swift` — Persistenz, iCloud-Ordner, PDF-Import, CSV-Export
-- `Berichtsheft/WeekView.swift` — Wocheneingabe
-- `Berichtsheft/SummaryView.swift` — Excel-Auswertung
-- `Berichtsheft/ReceiptsView.swift` — Ordner + Belegliste
+- `Berichtsheft/Models.swift` — Wochen/Tage/Buchungen/Fahrten + ISO-KW-Helfer
+- `Berichtsheft/Store.swift` — Persistenz, iCloud-Ordner, PDF-Import, CSV-Export, Seed
+- `Berichtsheft/WeekView.swift` — Wocheneingabe (Tage, Buchungen, Fahrten, Prüfsumme)
+- `Berichtsheft/SummaryView.swift` — Excel-Auswertung inkl. km und ✓/⚠︎
+- `Berichtsheft/ReceiptsView.swift` — Ordner, Fahrtstrecke, Belegliste
+- `Berichtsheft/WalkthroughView.swift` — Onboarding
 - `Berichtsheft/Theme.swift` — HOLON-Look
+- `Berichtsheft/Seed2026.json` — Vorbefüllung CW14–33 aus der Excel
 
 ## Bauen
 

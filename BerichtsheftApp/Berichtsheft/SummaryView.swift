@@ -69,18 +69,25 @@ struct SummaryView: View {
 
     // MARK: Jahres-Kacheln
 
-    private var totals: (nights: Int, amount: Double, pb: Int, ho: Int) {
-        yearData.weeks.reduce((0, 0.0, 0, 0)) { acc, w in
-            (acc.0 + w.nights, acc.1 + w.amount, acc.2 + w.count(.pb), acc.3 + w.count(.ho))
+    private var totals: (nights: Int, amount: Double, pb: Int, ho: Int, trips: Int, km: Double) {
+        yearData.weeks.reduce((0, 0.0, 0, 0, 0, 0.0)) { acc, w in
+            (acc.0 + w.nights, acc.1 + w.amount, acc.2 + w.count(.pb), acc.3 + w.count(.ho),
+             acc.4 + w.trips, acc.5 + store.kilometers(w))
         }
     }
 
     private var statCards: some View {
-        HStack(spacing: 10) {
-            statCard("Nächte", "\(totals.nights)")
-            statCard("Hotel €", Store.german(totals.amount))
-            statCard("PB Tage", "\(totals.pb)")
-            statCard("HO Tage", "\(totals.ho)")
+        VStack(spacing: 10) {
+            HStack(spacing: 10) {
+                statCard("Nächte", "\(totals.nights)")
+                statCard("Hotel €", Store.german(totals.amount))
+                statCard("km", Store.german(totals.km))
+            }
+            HStack(spacing: 10) {
+                statCard("PB Tage", "\(totals.pb)")
+                statCard("HO Tage", "\(totals.ho)")
+                statCard("Fahrten", "\(totals.trips)")
+            }
         }
     }
 
@@ -111,12 +118,15 @@ struct SummaryView: View {
             Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 6) {
                 GridRow {
                     Text("CW").gridColumnAlignment(.trailing)
+                    Text("✓")
                     Text("Hotel")
                     Text("Nächte").gridColumnAlignment(.trailing)
                     Text("Summe").gridColumnAlignment(.trailing)
                     ForEach(countCols, id: \.0) { col in
                         Text(col.0).gridColumnAlignment(.trailing)
                     }
+                    Text("Fahrt").gridColumnAlignment(.trailing)
+                    Text("km").gridColumnAlignment(.trailing)
                 }
                 .font(.caption.bold())
                 .foregroundStyle(Theme.secondaryText)
@@ -127,6 +137,14 @@ struct SummaryView: View {
                     let w = yearData.week(cw: cw)
                     GridRow {
                         Text("\(cw)")
+                        // Prüfsumme: Mo–Fr müssen 5 Attribute haben
+                        if w.isEmpty {
+                            Text("")
+                        } else {
+                            Image(systemName: w.isComplete ? "checkmark" : "exclamationmark.triangle.fill")
+                                .font(.caption2)
+                                .foregroundStyle(w.isComplete ? Theme.green : Color(red: 1.0, green: 0.72, blue: 0.3))
+                        }
                         Text(w.isEmpty ? "–" : w.hotelLabel)
                             .lineLimit(1)
                             .frame(minWidth: 90, alignment: .leading)
@@ -137,6 +155,8 @@ struct SummaryView: View {
                             Text(n > 0 ? "\(n)" : "")
                                 .foregroundStyle(Theme.kindColor(col.1))
                         }
+                        Text(w.trips > 0 ? "\(w.trips)" : "")
+                        Text(w.trips > 0 ? Store.german(store.kilometers(w)) : "")
                     }
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(w.isEmpty ? Theme.secondaryText.opacity(0.5) : .primary)
@@ -147,11 +167,14 @@ struct SummaryView: View {
                 GridRow {
                     Text("Σ")
                     Text("")
+                    Text("")
                     Text("\(sumNights)")
                     Text(Store.german(sumAmount))
                     ForEach(countCols, id: \.0) { col in
                         Text("\(sumCount(col.1))")
                     }
+                    Text("\(totals.trips)")
+                    Text(Store.german(totals.km))
                 }
                 .font(.system(.caption, design: .monospaced).bold())
                 .foregroundStyle(Theme.green)

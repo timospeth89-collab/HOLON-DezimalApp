@@ -15,7 +15,21 @@ final class Store: ObservableObject {
 
     init() {
         load()
+        importSeedIfNeeded()
         folderName = resolveBaseFolder()?.lastPathComponent
+    }
+
+    /// Beim allerersten Start die 2026-Daten aus der bisherigen Excel
+    /// (Berichtsheft - Tabelle.xlsx, CW14–33) vorbefüllen.
+    private func importSeedIfNeeded() {
+        let flag = "berichtsheft.seedImported"
+        guard !UserDefaults.standard.bool(forKey: flag), data.years.isEmpty,
+              let url = Bundle.main.url(forResource: "Seed2026", withExtension: "json"),
+              let raw = try? Data(contentsOf: url),
+              let seed = try? JSONDecoder().decode(YearData.self, from: raw) else { return }
+        data.update(seed)
+        UserDefaults.standard.set(true, forKey: flag)
+        save()
     }
 
     // MARK: - Lokale Persistenz
@@ -58,6 +72,18 @@ final class Store: ObservableObject {
             get: { self.week(year: year, cw: cw) },
             set: { self.update(year: year, week: $0) }
         )
+    }
+
+    var settingsBinding: Binding<RouteSettings> {
+        Binding(
+            get: { self.data.settings },
+            set: { self.data.settings = $0; self.save() }
+        )
+    }
+
+    /// Kilometer einer Woche: Fahrten × einfache Strecke.
+    func kilometers(_ week: Week) -> Double {
+        Double(week.trips) * data.settings.kmOneWay
     }
 
     /// Alle bisher verwendeten Hotelnamen (für Vorschläge).
@@ -219,27 +245,33 @@ final class Store: ObservableObject {
         }
     }
 
-    /// Auswertung, Spalten exakt wie die Excel; Semikolon + Dezimalkomma,
-    /// damit deutsches Excel die Datei direkt öffnet.
+    /// Auswertung, Spalten wie die Excel plus Fahrten/km/Prüfsumme;
+    /// Semikolon + Dezimalkomma, damit deutsches Excel die Datei direkt öffnet.
     func summaryCSV(year: Int) -> String {
-        var lines = ["CW;Hotel;Nächte;Summe;PB Tage;HO Tage;FT;U;EZ;Kind_Krank;Krank"]
+        var lines = ["CW;Hotel;Nächte;Summe;PB Tage;HO Tage;FT;U;EZ;Kind_Krank;Krank;Fahrten;km;Tage erfasst"]
         let yearData = data.year(year)
-        var tot = (nights: 0, amount: 0.0, pb: 0, ho: 0, ft: 0, u: 0, ez: 0, kk: 0, kr: 0)
+        var tot = (nights: 0, amount: 0.0, pb: 0, ho: 0, ft: 0, u: 0, ez: 0, kk: 0, kr: 0,
+                   trips: 0, km: 0.0)
 
         for cw in 1...CW.weeksIn(year: year) {
             let w = yearData.week(cw: cw)
             if w.isEmpty {
-                lines.append("\(cw);;;;;;;;;;")
+                lines.append("\(cw);;;;;;;;;;;;;")
                 continue
             }
             let pb = w.count(.pb), ho = w.count(.ho), ft = w.count(.ft)
             let u = w.count(.urlaub), ez = w.count(.ez)
             let kk = w.count(.kindKrank), kr = w.count(.krank)
-            lines.append("\(cw);\(w.hotelLabel);\(w.nights);\(Store.german(w.amount));\(pb);\(ho);\(ft);\(u);\(ez);\(kk);\(kr)")
+            let km = kilometers(w)
+            let check = w.isComplete ? "5/5" : "\(w.weekdaysFilled)/5 !"
+            lines.append("\(cw);\(w.hotelLabel);\(w.nights);\(Store.german(w.amount));\(pb);\(ho);\(ft);\(u);\(ez);\(kk);\(kr);\(w.trips);\(Store.german(km));\(check)")
             tot = (tot.nights + w.nights, tot.amount + w.amount, tot.pb + pb, tot.ho + ho,
-                   tot.ft + ft, tot.u + u, tot.ez + ez, tot.kk + kk, tot.kr + kr)
+                   tot.ft + ft, tot.u + u, tot.ez + ez, tot.kk + kk, tot.kr + kr,
+                   tot.trips + w.trips, tot.km + km)
         }
-        lines.append("Summe;;\(tot.nights);\(Store.german(tot.amount));\(tot.pb);\(tot.ho);\(tot.ft);\(tot.u);\(tot.ez);\(tot.kk);\(tot.kr)")
+        lines.append("Summe;;\(tot.nights);\(Store.german(tot.amount));\(tot.pb);\(tot.ho);\(tot.ft);\(tot.u);\(tot.ez);\(tot.kk);\(tot.kr);\(tot.trips);\(Store.german(tot.km));")
+        lines.append("")
+        lines.append("Fahrtstrecke;\(Store.csvEscape(data.settings.from)) -> \(Store.csvEscape(data.settings.to));einfach;\(Store.german(data.settings.kmOneWay)) km")
         return "\u{FEFF}" + lines.joined(separator: "\r\n") + "\r\n"
     }
 

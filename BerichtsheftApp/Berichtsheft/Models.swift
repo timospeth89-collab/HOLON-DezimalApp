@@ -37,6 +37,17 @@ struct DayEntry: Codable, Equatable {
     var location: String = ""
 
     var isEmpty: Bool { kind == .frei && activity.isEmpty && location.isEmpty }
+
+    init() {}
+
+    enum CodingKeys: String, CodingKey { case kind, activity, location }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        kind = try c.decodeIfPresent(DayKind.self, forKey: .kind) ?? .frei
+        activity = try c.decodeIfPresent(String.self, forKey: .activity) ?? ""
+        location = try c.decodeIfPresent(String.self, forKey: .location) ?? ""
+    }
 }
 
 /// Eine (unabhängige) Hotelbuchung innerhalb einer CW.
@@ -49,16 +60,45 @@ struct Booking: Codable, Equatable, Identifiable {
     var amount: Double = 0
     /// Dateiname des abgelegten Belegs im iCloud-Ordner (falls schon importiert).
     var receiptFile: String = ""
+
+    init() {}
+
+    enum CodingKeys: String, CodingKey { case id, hotel, nights, amount, receiptFile }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        hotel = try c.decodeIfPresent(String.self, forKey: .hotel) ?? ""
+        nights = try c.decodeIfPresent(Int.self, forKey: .nights) ?? 0
+        amount = try c.decodeIfPresent(Double.self, forKey: .amount) ?? 0
+        receiptFile = try c.decodeIfPresent(String.self, forKey: .receiptFile) ?? ""
+    }
 }
 
-/// Eine Kalenderwoche: 7 Tage (Mo–So) + Hotelbuchungen.
+/// Eine Kalenderwoche: 7 Tage (Mo–So) + Hotelbuchungen + Fahrten.
 struct Week: Codable, Equatable {
     var cw: Int
     var days: [DayEntry] = Array(repeating: DayEntry(), count: 7)
     var bookings: [Booking] = []
     var note: String = ""
+    /// Anzahl einfacher Fahrten Heimat ↔ Einsatzort in dieser Woche
+    /// (2 = einmal hin und zurück). km = trips × Settings.kmOneWay.
+    var trips: Int = 0
 
     init(cw: Int) { self.cw = cw }
+
+    enum CodingKeys: String, CodingKey { case cw, days, bookings, note, trips }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        cw = try c.decode(Int.self, forKey: .cw)
+        var d = try c.decodeIfPresent([DayEntry].self, forKey: .days) ?? []
+        while d.count < 7 { d.append(DayEntry()) }
+        days = Array(d.prefix(7))
+        bookings = try c.decodeIfPresent([Booking].self, forKey: .bookings) ?? []
+        note = try c.decodeIfPresent(String.self, forKey: .note) ?? ""
+        trips = try c.decodeIfPresent(Int.self, forKey: .trips) ?? 0
+    }
 
     var nights: Int { bookings.reduce(0) { $0 + $1.nights } }
     var amount: Double { bookings.reduce(0) { $0 + $1.amount } }
@@ -66,6 +106,13 @@ struct Week: Codable, Equatable {
     func count(_ kind: DayKind) -> Int {
         days.filter { $0.kind == kind }.count
     }
+
+    /// Prüfsumme: Mo–Fr sollen immer ein Attribut (≠ frei) haben.
+    var weekdaysFilled: Int {
+        days.prefix(5).filter { $0.kind != .frei }.count
+    }
+
+    var isComplete: Bool { weekdaysFilled == 5 }
 
     /// Hotelspalte wie in der Excel: Hotelname(n), oder Wochen-Art wenn kein Hotel.
     var hotelLabel: String {
@@ -84,7 +131,26 @@ struct Week: Codable, Equatable {
     }
 
     var isEmpty: Bool {
-        bookings.isEmpty && note.isEmpty && days.allSatisfy(\.isEmpty)
+        bookings.isEmpty && note.isEmpty && trips == 0 && days.allSatisfy(\.isEmpty)
+    }
+}
+
+/// Fahrtstrecke für die Kilometer-Erfassung (Fahrtkosten fürs Finanzamt).
+struct RouteSettings: Codable, Equatable {
+    var from: String = "Weinbergstr. 27"
+    var to: String = "Elsener Str. 95, 33102 Paderborn"
+    /// Einfache Strecke in km (einmal in den Einstellungen eintragen).
+    var kmOneWay: Double = 0
+
+    init() {}
+
+    enum CodingKeys: String, CodingKey { case from, to, kmOneWay }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        from = try c.decodeIfPresent(String.self, forKey: .from) ?? "Weinbergstr. 27"
+        to = try c.decodeIfPresent(String.self, forKey: .to) ?? "Elsener Str. 95, 33102 Paderborn"
+        kmOneWay = try c.decodeIfPresent(Double.self, forKey: .kmOneWay) ?? 0
     }
 }
 
@@ -94,6 +160,14 @@ struct YearData: Codable, Equatable {
     var weeks: [Week] = []
 
     init(year: Int) { self.year = year }
+
+    enum CodingKeys: String, CodingKey { case year, weeks }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        year = try c.decode(Int.self, forKey: .year)
+        weeks = try c.decodeIfPresent([Week].self, forKey: .weeks) ?? []
+    }
 
     func week(cw: Int) -> Week {
         weeks.first(where: { $0.cw == cw }) ?? Week(cw: cw)
@@ -111,6 +185,17 @@ struct YearData: Codable, Equatable {
 
 struct AppData: Codable, Equatable {
     var years: [YearData] = []
+    var settings: RouteSettings = RouteSettings()
+
+    init() {}
+
+    enum CodingKeys: String, CodingKey { case years, settings }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        years = try c.decodeIfPresent([YearData].self, forKey: .years) ?? []
+        settings = try c.decodeIfPresent(RouteSettings.self, forKey: .settings) ?? RouteSettings()
+    }
 
     func year(_ y: Int) -> YearData {
         years.first(where: { $0.year == y }) ?? YearData(year: y)

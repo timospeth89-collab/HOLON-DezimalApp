@@ -22,6 +22,13 @@ struct WeekView: View {
             .navigationTitle("Berichtsheft")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        NotificationCenter.default.post(name: .showWalkthrough, object: nil)
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Picker("Jahr", selection: $year) {
@@ -118,6 +125,7 @@ struct WeekEditor: View {
         VStack(spacing: 14) {
             daysCard
             bookingsCard
+            tripsCard
             noteCard
         }
         .fileImporter(isPresented: $showPDFImporter,
@@ -141,6 +149,7 @@ struct WeekEditor: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Tage").font(.headline)
+                checksumBadge
                 Spacer()
                 Menu {
                     Button("Mo–Fr vor Ort (PB)") { fill(.pb) }
@@ -195,6 +204,14 @@ struct WeekEditor: View {
         .padding(.vertical, 2)
     }
 
+    /// Prüfsumme: Mo–Fr sollen immer ein Attribut haben (5/5).
+    private var checksumBadge: some View {
+        Label("\(week.weekdaysFilled)/5",
+              systemImage: week.isComplete ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+            .font(.caption.bold())
+            .foregroundStyle(week.isComplete ? Theme.green : Color(red: 1.0, green: 0.72, blue: 0.3))
+    }
+
     private func dayLabel(_ i: Int) -> String {
         guard let date = CW.date(year: year, cw: cw, dayIndex: i) else { return "" }
         let df = DateFormatter()
@@ -237,10 +254,40 @@ struct WeekEditor: View {
 
             Button {
                 week.bookings.append(Booking())
+                // Hotelwoche heißt normalerweise: einmal hin, einmal zurück.
+                if week.trips == 0 { week.trips = 2 }
             } label: {
                 Label("Buchung hinzufügen", systemImage: "plus.circle.fill")
                     .font(.subheadline.bold())
             }
+        }
+        .card()
+    }
+
+    // MARK: Fahrten
+
+    private var tripsCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Fahrten").font(.headline)
+                Spacer()
+                if week.trips > 0 {
+                    Text(store.data.settings.kmOneWay > 0
+                         ? "\(Store.german(store.kilometers(week))) km"
+                         : "km-Strecke in „Belege“ eintragen")
+                        .font(.caption)
+                        .foregroundStyle(store.data.settings.kmOneWay > 0
+                                         ? Theme.green
+                                         : Color(red: 1.0, green: 0.72, blue: 0.3))
+                }
+            }
+            Stepper(value: $week.trips, in: 0...14) {
+                Text("\(week.trips) einfache Fahrten")
+                    .font(.subheadline)
+            }
+            Text("\(store.data.settings.from) ↔ \(store.data.settings.to) · 2 = einmal hin und zurück")
+                .font(.caption2)
+                .foregroundStyle(Theme.secondaryText)
         }
         .card()
     }
