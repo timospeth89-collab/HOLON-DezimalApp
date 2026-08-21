@@ -12,7 +12,12 @@ git fetch origin
 git checkout claude/billing-app-hotel-expenses-yxts4l
 ```
 
-(Oder den Branch vorher auf GitHub in `main` mergen und normal `git pull`.)
+**Besser: vorher auf GitHub in `main` mergen** und dann einfach `git pull`.
+Grund: Der Auto-Refresh (Schritt 4) baut aus dem Ordner, der gerade
+ausgecheckt ist. Bleibst du auf dem Feature-Branch und wechselst später
+für etwas anderes auf `main`, verschwindet `BerichtsheftApp/` aus dem
+Arbeitsverzeichnis — der LaunchAgent scheitert dann still, und die App
+läuft nach 7 Tagen ab. Auf `main` gemergt kann das nicht passieren.
 
 ## 2. Bauen und installieren
 
