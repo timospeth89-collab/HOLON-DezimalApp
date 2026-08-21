@@ -1,0 +1,39 @@
+name: Build
+
+# Baut beide Apps für den iOS-Simulator — ohne Signierung, damit kein
+# Entwickler-Team nötig ist. Zweck: Compile-Fehler sofort sichtbar machen,
+# statt sie erst beim Bauen am Mac zu finden.
+on:
+  push:
+    branches: [main, 'claude/**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode-Version
+        run: xcodebuild -version
+
+      - name: Berichtsheft bauen
+        run: |
+          xcodebuild \
+            -project BerichtsheftApp/BerichtsheftApp.xcodeproj \
+            -scheme Berichtsheft \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: DezimalApp bauen
+        run: |
+          xcodebuild \
+            -project DezimalApp.xcodeproj \
+            -scheme DezimalApp \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
