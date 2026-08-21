@@ -6,18 +6,19 @@ Voraussetzung: Mac mit Xcode 16, iPhone einmal per Kabel gekoppelt
 
 ## 1. Code holen
 
+Alles liegt auf `main` — es reicht:
+
 ```bash
-cd <dein Repo-Ordner>   # z. B. .../000-Claude/Code/DezimalApp
-git fetch origin
-git checkout claude/billing-app-hotel-expenses-yxts4l
+cd "/Users/timospeth/Library/Mobile Documents/com~apple~CloudDocs/000-Claude/Code/DezimalApp"
+git checkout main
+git pull origin main
 ```
 
-**Besser: vorher auf GitHub in `main` mergen** und dann einfach `git pull`.
-Grund: Der Auto-Refresh (Schritt 4) baut aus dem Ordner, der gerade
-ausgecheckt ist. Bleibst du auf dem Feature-Branch und wechselst später
-für etwas anderes auf `main`, verschwindet `BerichtsheftApp/` aus dem
-Arbeitsverzeichnis — der LaunchAgent scheitert dann still, und die App
-läuft nach 7 Tagen ab. Auf `main` gemergt kann das nicht passieren.
+Damit ist der Auto-Refresh (Schritt 4) auf der sicheren Seite: Er baut aus
+dem Ordner, der gerade ausgecheckt ist. Läge die App nur auf einem
+Feature-Branch, würde `BerichtsheftApp/` beim Wechsel auf `main`
+verschwinden — der LaunchAgent scheiterte dann still und die App liefe
+nach 7 Tagen ab.
 
 ## 2. Bauen und installieren
 

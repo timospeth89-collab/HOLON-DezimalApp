@@ -15,7 +15,7 @@ struct BerichtsheftApp: App {
 }
 
 struct RootView: View {
-    /// Walkthrough beim ersten Start; über „?" in der Woche wieder aufrufbar.
+    /// Walkthrough beim ersten Start; über „?“ in der Woche wieder aufrufbar.
     @AppStorage("walkthroughSeen") private var walkthroughSeen = false
     @State private var showWalkthrough = false
 

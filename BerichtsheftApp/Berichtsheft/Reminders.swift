@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
 
-/// Lokale Erinnerung: Mo–Fr um 17:00 Uhr „Berichtsheft ausfüllen".
+/// Lokale Erinnerung: Mo–Fr um 17:00 Uhr „Berichtsheft ausfüllen“.
 /// Fünf wiederholende Kalender-Trigger, keine Server nötig.
 enum Reminders {
     private static let enabledKey = "berichtsheft.reminderEnabled"
