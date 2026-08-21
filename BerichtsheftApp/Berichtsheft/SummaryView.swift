@@ -108,9 +108,19 @@ struct SummaryView: View {
 
     // MARK: Tabelle
 
-    private let countCols: [(String, DayKind)] = [
-        ("PB", .pb), ("HO", .ho), ("FT", .ft), ("U", .urlaub),
-        ("EZ", .ez), ("KiKr", .kindKrank), ("Kr", .krank),
+    /// Zähl-Spalten der Tabelle. Bewusst ein Struct statt eines Tupels —
+    /// Swift kennt keine KeyPaths auf Tupel-Elemente (`id: \.0`).
+    private struct CountColumn: Identifiable {
+        let title: String
+        let kind: DayKind
+        var id: String { title }
+    }
+
+    private let countCols: [CountColumn] = [
+        .init(title: "PB", kind: .pb), .init(title: "HO", kind: .ho),
+        .init(title: "FT", kind: .ft), .init(title: "U", kind: .urlaub),
+        .init(title: "EZ", kind: .ez), .init(title: "KiKr", kind: .kindKrank),
+        .init(title: "Kr", kind: .krank),
     ]
 
     private var table: some View {
@@ -122,8 +132,8 @@ struct SummaryView: View {
                     Text("Hotel")
                     Text("Nächte").gridColumnAlignment(.trailing)
                     Text("Summe").gridColumnAlignment(.trailing)
-                    ForEach(countCols, id: \.0) { col in
-                        Text(col.0).gridColumnAlignment(.trailing)
+                    ForEach(countCols) { col in
+                        Text(col.title).gridColumnAlignment(.trailing)
                     }
                     Text("Fahrt").gridColumnAlignment(.trailing)
                     Text("km").gridColumnAlignment(.trailing)
@@ -150,10 +160,10 @@ struct SummaryView: View {
                             .frame(minWidth: 90, alignment: .leading)
                         Text(w.nights > 0 ? "\(w.nights)" : "")
                         Text(w.amount > 0 ? Store.german(w.amount) : "")
-                        ForEach(countCols, id: \.0) { col in
-                            let n = w.count(col.1)
+                        ForEach(countCols) { col in
+                            let n = w.count(col.kind)
                             Text(n > 0 ? "\(n)" : "")
-                                .foregroundStyle(Theme.kindColor(col.1))
+                                .foregroundStyle(Theme.kindColor(col.kind))
                         }
                         Text(w.trips > 0 ? "\(w.trips)" : "")
                         Text(w.trips > 0 ? Store.german(store.kilometers(w)) : "")
@@ -170,8 +180,8 @@ struct SummaryView: View {
                     Text("")
                     Text("\(sumNights)")
                     Text(Store.german(sumAmount))
-                    ForEach(countCols, id: \.0) { col in
-                        Text("\(sumCount(col.1))")
+                    ForEach(countCols) { col in
+                        Text("\(sumCount(col.kind))")
                     }
                     Text("\(totals.trips)")
                     Text(Store.german(totals.km))

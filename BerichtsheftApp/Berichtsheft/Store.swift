@@ -232,7 +232,7 @@ final class Store: ObservableObject {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let json = (try? encoder.encode(data.year(year))) ?? Data()
 
-        return try withYearFolder(year: year) { dir in
+        return try withYearFolder(year: year) { dir -> [String] in
             let files = [
                 ("Berichtsheft_\(year).csv", Data(summary.utf8)),
                 ("Berichtsheft_\(year)_Tage.csv", Data(daysCSV.utf8)),
@@ -241,7 +241,7 @@ final class Store: ObservableObject {
             for (name, raw) in files {
                 try raw.write(to: dir.appendingPathComponent(name), options: .atomic)
             }
-            return files.map(\.0)
+            return files.map { $0.0 }
         }
     }
 

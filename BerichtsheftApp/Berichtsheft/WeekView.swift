@@ -247,9 +247,15 @@ struct WeekEditor: View {
                     .foregroundStyle(Theme.secondaryText)
             }
 
-            ForEach(Array(week.bookings.enumerated()), id: \.element.id) { index, _ in
-                bookingRow(index: index)
-                if index < week.bookings.count - 1 { Divider().overlay(Theme.cardBorder) }
+            // Identität über Booking.id (nicht über den Index), damit Löschen
+            // mitten in der Liste keine veraltete Zeile stehen lässt.
+            ForEach(week.bookings) { booking in
+                if let index = week.bookings.firstIndex(where: { $0.id == booking.id }) {
+                    bookingRow(index: index)
+                    if booking.id != week.bookings.last?.id {
+                        Divider().overlay(Theme.cardBorder)
+                    }
+                }
             }
 
             Button {
