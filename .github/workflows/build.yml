@@ -20,6 +20,7 @@ jobs:
 
       - name: Berichtsheft bauen
         run: |
+          set +e
           xcodebuild \
             -project BerichtsheftApp/BerichtsheftApp.xcodeproj \
             -scheme Berichtsheft \
@@ -27,7 +28,10 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
             -derivedDataPath build \
-            build
+            build > berichtsheft-build.log 2>&1
+          status=$?
+          grep -E "error:" berichtsheft-build.log | sort -u | head -40
+          exit $status
 
       # Die Vorbefuellung (CW14-33) wird nur wirksam, wenn Seed2026.json
       # tatsaechlich im App-Bundle landet. Fehlt sie, startet die App still
@@ -42,10 +46,14 @@ jobs:
 
       - name: DezimalApp bauen
         run: |
+          set +e
           xcodebuild \
             -project DezimalApp.xcodeproj \
             -scheme DezimalApp \
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
-            build
+            build > dezimal-build.log 2>&1
+          status=$?
+          grep -E "error:" dezimal-build.log | sort -u | head -40
+          exit $status
