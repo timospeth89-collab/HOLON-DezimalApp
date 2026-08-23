@@ -22,11 +22,13 @@ Menü „Ausfüllen" setzt Mo–Fr auf einmal (PB-Woche, HO-Woche, Urlaub, EZ).
 zeigt ein ✓ (5/5) bzw. ⚠︎ (z. B. 3/5) den Stand; in der Auswertung markiert
 eine ✓/⚠︎-Spalte jede Woche, im CSV-Export steht `Tage erfasst`.
 
-**Fahrten:** pro Woche die einfachen Fahrten zählen (2 = hin + zurück);
-beim Anlegen der ersten Buchung werden automatisch 2 vorgeschlagen. Die
-Strecke (Weinbergstr. 27 ↔ Elsener Str. 95, Paderborn) und die einfachen km
-trägst du einmal im Tab „Belege" ein — km = Fahrten × Strecke, sichtbar in
-Auswertung und Export.
+**Fahrten:** Paderborn ist die erste Tätigkeitsstätte, also gilt die
+Entfernungspauschale auf die **einfache** Strecke. Pro Woche werden zwei
+Dinge erfasst: die **Familienheimfahrt** (Wohnung ↔ Paderborn, i. d. R. 1×,
+beim Anlegen der ersten Buchung vorgeschlagen) und die **Tagesfahrten**
+Unterkunft → Arbeit, deren Anzahl automatisch den PB-Tagen entspricht und
+pro Woche übersteuerbar ist. Die Strecken stehen im Tab „Steuer“: einmal
+die Heimfahrt, und je Hotel die Tagesstrecke — die Unterkunft wechselt ja.
 
 Dazu die **Hotelbuchungen** der Woche: Hotel, Nächte, Betrag. Mehrere
 unabhängige Buchungen pro CW sind möglich — die Position in der Liste ist der
@@ -34,10 +36,12 @@ Index im Dateinamen. Über „Beleg (PDF) ablegen" wählst du die Rechnung aus
 Dateien/iCloud, sie wird **automatisch umbenannt** nach dem Schema
 
 ```
-CW<KW>_<Hotel>_<Index>.pdf     z. B. CW17_SleepInn_01.pdf, CW30_InterCity_02.pdf
+<Jahr>-CW<KW>_<Hotel>_<Index>.pdf   z. B. 2026-CW17_SleepInn_01.pdf
 ```
 
 Sonderzeichen im Hotelnamen werden ersetzt (`B&B` → `BaB`, Umlaute → ae/oe/ue).
+Das Jahr steht vorn, damit die Datei auch außerhalb des Jahresordners
+eindeutig ist und chronologisch sortiert.
 
 ### 2. Auswertung
 Jahrestabelle exakt wie die Excel: eine Zeile pro CW mit
@@ -49,6 +53,7 @@ Summenzeile, oben Jahres-Kacheln (Nächte, Hotel-€, PB-/HO-Tage).
 - `Berichtsheft_<Jahr>.csv` — Auswertung, Spalten wie die Excel
   (Semikolon + Dezimalkomma, öffnet direkt im deutschen Excel)
 - `Berichtsheft_<Jahr>_Tage.csv` — alle Tageseinträge (Datum, Art, Tätigkeit, Ort)
+- `Berichtsheft_<Jahr>_Steuer.csv` — Zusammenfassung fürs Finanzamt
 - `Berichtsheft_<Jahr>.json` — komplettes Datenbackup
 
 ### Erinnerung
@@ -59,7 +64,22 @@ einmal nach der Mitteilungs-Erlaubnis; der Schalter dazu sitzt im Tab
 „Belege". Rein lokale Notifications (fünf wiederholende Kalender-Trigger),
 kein Server nötig.
 
-### 3. Belege
+### 3. Steuer
+
+Jahres-Zusammenfassung zum Abtippen in die Steuersoftware: Übernachtungskosten
+der Zweitunterkunft, Familienheimfahrten und Fahrten Unterkunft → erste
+Tätigkeitsstätte, jeweils mit Entfernungspauschale. Darunter die Eingaben,
+von denen das abhängt — Heimfahrt-Strecke, Strecke je Hotel und die Sätze
+(voreingestellt 0,30 € bis 20 km, 0,38 € darüber; im Zweifel fürs jeweilige
+Jahr prüfen und anpassen).
+
+Die App rechnet nach der Annahme: Paderborn ist erste Tätigkeitsstätte, die
+Hotelkosten laufen über die **doppelte Haushaltsführung**. Dort gelten eigene
+Regeln (Höchstbetrag Unterkunft, Verpflegungspauschale nur in den ersten drei
+Monaten, Nachweis des eigenen Hausstands). Ob und ab wann das greift, gehört
+steuerlich bestätigt — die App ist ein Werkzeug, keine Steuerberatung.
+
+### 4. Belege
 Hier wählst du **einmalig** den iCloud-Drive-Ordner (z. B.
 `01_Jobs/008_Holon`). Die App legt darunter selbst
 `SteuerHotelFahrtkosten/<Jahr>` an und merkt sich den Zugriff dauerhaft
@@ -90,8 +110,9 @@ Installation als Vorabversion: siehe [WALKTHROUGH.md](WALKTHROUGH.md).
 - `Berichtsheft/Models.swift` — Wochen/Tage/Buchungen/Fahrten + ISO-KW-Helfer
 - `Berichtsheft/Store.swift` — Persistenz, iCloud-Ordner, PDF-Import, CSV-Export, Seed
 - `Berichtsheft/WeekView.swift` — Wocheneingabe (Tage, Buchungen, Fahrten, Prüfsumme)
+- `Berichtsheft/TaxView.swift` — Steuer-Auswertung, Strecken, Sätze
 - `Berichtsheft/SummaryView.swift` — Excel-Auswertung inkl. km und ✓/⚠︎
-- `Berichtsheft/ReceiptsView.swift` — Ordner, Fahrtstrecke, Belegliste
+- `Berichtsheft/ReceiptsView.swift` — Ordner, Erinnerung, Belegliste
 - `Berichtsheft/WalkthroughView.swift` — Onboarding
 - `Berichtsheft/Theme.swift` — HOLON-Look
 - `Berichtsheft/Seed2026.json` — Vorbefüllung CW14–33 aus der Excel
