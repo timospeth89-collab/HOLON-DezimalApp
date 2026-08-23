@@ -15,13 +15,13 @@ struct WalkthroughView: View {
          "Pro Kalenderwoche 7 Tage: Art (PB vor Ort, HO, Feiertag, Urlaub, EZ, Kind krank, Krank), Tätigkeit und Ort.\n\nDas ✓/⚠︎ oben zeigt die Prüfsumme: Mo–Fr sollen immer 5 Tage ein Attribut haben.\n\n„Ausfüllen“ setzt Mo–Fr auf einen Schlag."),
         ("bed.double.fill",
          "Hotel + Beleg",
-         "Buchungen mit Nächten und Betrag eintragen — mehrere pro Woche möglich.\n\n„Beleg (PDF) ablegen“ holt die Rechnung aus Dateien/iCloud und benennt sie automatisch:\n\nCW17_SleepInn_01.pdf\n\nzweite Buchung → _02, dritte → _03."),
+         "Buchungen mit Nächten und Betrag eintragen — mehrere pro Woche möglich.\n\n„Beleg (PDF) ablegen“ holt die Rechnung aus Dateien/iCloud und benennt sie automatisch:\n\n2026-CW17_SleepInn_01.pdf\n\nzweite Buchung → _02, dritte → _03."),
         ("car.fill",
          "Fahrten",
-         "Pro Woche die einfachen Fahrten zählen (2 = hin + zurück).\n\nDie Strecke Weinbergstr. 27 ↔ Elsener Str. 95 trägst du einmal im Tab „Belege“ ein — km stehen dann in Auswertung und Export."),
+         "Paderborn ist deine erste Tätigkeitsstätte — es gilt die Entfernungspauschale auf die einfache Strecke.\n\nPro Woche: eine Familienheimfahrt (Wohnung ↔ Paderborn) und die Tagesfahrten Hotel → Elsener Straße, die die App aus deinen PB-Tagen übernimmt.\n\nDie Strecken trägst du einmal im Tab „Steuer“ ein — je Hotel eine eigene."),
         ("icloud.fill",
          "Einrichten (einmalig)",
-         "1. Tab „Belege“ → „Ordner wählen“ → in iCloud Drive deinen Ordner 01_Jobs/008_Holon wählen. Die App legt SteuerHotelFahrtkosten/2026 selbst an.\n\n2. Darunter die einfache km-Strecke eintragen.\n\n3. Tab „Auswertung“ → Export schreibt CSV (öffnet in Excel) + JSON-Backup in den Ordner.\n\n4. Gleich fragt die App nach Mitteilungen — dann erinnert sie dich Mo–Fr um 17 Uhr ans Eintragen (abschaltbar im Tab „Belege“)."),
+         "1. Tab „Belege“ → „Ordner wählen“ → in iCloud Drive deinen Ordner 01_Jobs/008_Holon wählen. Die App legt SteuerHotelFahrtkosten/2026 selbst an.\n\n2. Tab „Steuer“ → Strecke der Heimfahrt und je Hotel die Tagesstrecke eintragen.\n\n3. Tab „Auswertung“ → Export schreibt CSV (öffnet in Excel) + JSON-Backup in den Ordner.\n\n4. Gleich fragt die App nach Mitteilungen — dann erinnert sie dich Mo–Fr um 17 Uhr ans Eintragen (abschaltbar im Tab „Belege“)."),
     ]
 
     var body: some View {

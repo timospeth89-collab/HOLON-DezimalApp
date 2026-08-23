@@ -56,9 +56,7 @@ final class Store: ObservableObject {
 
     // MARK: - Wochen lesen/schreiben
 
-    func week(year: Int, cw: Int) -> Week {
-        data.year(year).week(cw: cw)
-    }
+    func week(year: Int, cw: Int) -> Week { data.year(year).week(cw: cw) }
 
     func update(year: Int, week: Week) {
         var yearData = data.year(year)
@@ -68,25 +66,16 @@ final class Store: ObservableObject {
     }
 
     func binding(year: Int, cw: Int) -> Binding<Week> {
-        Binding(
-            get: { self.week(year: year, cw: cw) },
-            set: { self.update(year: year, week: $0) }
-        )
+        Binding(get: { self.week(year: year, cw: cw) },
+                set: { self.update(year: year, week: $0) })
     }
 
-    var settingsBinding: Binding<RouteSettings> {
-        Binding(
-            get: { self.data.settings },
-            set: { self.data.settings = $0; self.save() }
-        )
+    var settingsBinding: Binding<TaxSettings> {
+        Binding(get: { self.data.settings },
+                set: { self.data.settings = $0; self.save() })
     }
 
-    /// Kilometer einer Woche: Fahrten × einfache Strecke.
-    func kilometers(_ week: Week) -> Double {
-        Double(week.trips) * data.settings.kmOneWay
-    }
-
-    /// Alle bisher verwendeten Hotelnamen (für Vorschläge).
+    /// Alle bisher verwendeten Hotelnamen (für Vorschläge und Streckenpflege).
     func knownHotels(year: Int) -> [String] {
         var seen = [String]()
         for w in data.year(year).weeks {
@@ -97,9 +86,73 @@ final class Store: ObservableObject {
         return seen.isEmpty ? ["B&B", "InterCity", "SleepInn", "MotelLutz"] : seen
     }
 
+    // MARK: - Steuerliche Berechnung
+    //
+    // Annahme (vom Nutzer bestätigt): Paderborn ist die erste Tätigkeitsstätte.
+    // Damit gilt für beide Fahrtarten die Entfernungspauschale auf die
+    // **einfache** Strecke, und die Hotelkosten laufen über die doppelte
+    // Haushaltsführung — nicht als Reisekosten.
+
+    /// Einfache Strecke Zweitunterkunft -> Arbeit für diese Woche.
+    func commuteKm(_ week: Week) -> Double {
+        data.settings.km(forHotel: week.primaryHotel)
+    }
+
+    /// Entfernungspauschale der Woche für die Fahrten Unterkunft -> Arbeit.
+    func commuteAllowance(_ week: Week) -> Double {
+        Double(week.commuteDays) * data.settings.allowance(forDistance: commuteKm(week))
+    }
+
+    /// Entfernungspauschale der Woche für die Familienheimfahrten.
+    func homeAllowance(_ week: Week) -> Double {
+        Double(week.homeTrips) * data.settings.allowance(forDistance: data.settings.kmHomeToWork)
+    }
+
+    func weekAllowance(_ week: Week) -> Double {
+        commuteAllowance(week) + homeAllowance(week)
+    }
+
+    struct TaxSummary {
+        var nights = 0
+        var lodging = 0.0
+        var homeTrips = 0
+        var homeKm = 0.0
+        var homeAllowance = 0.0
+        var commuteDays = 0
+        var commuteKm = 0.0
+        var commuteAllowance = 0.0
+        /// Hotels, für die noch keine Strecke hinterlegt ist.
+        var hotelsWithoutRoute: [String] = []
+
+        var totalAllowance: Double { homeAllowance + commuteAllowance }
+    }
+
+    func taxSummary(year: Int) -> TaxSummary {
+        var s = TaxSummary()
+        let settings = data.settings
+        for w in data.year(year).weeks where !w.isEmpty {
+            s.nights += w.nights
+            s.lodging += w.amount
+            s.homeTrips += w.homeTrips
+            s.homeKm += Double(w.homeTrips) * settings.kmHomeToWork
+            s.homeAllowance += homeAllowance(w)
+
+            let days = w.commuteDays
+            let km = commuteKm(w)
+            s.commuteDays += days
+            s.commuteKm += Double(days) * km
+            s.commuteAllowance += commuteAllowance(w)
+
+            let hotel = w.primaryHotel
+            if days > 0, !hotel.isEmpty, km == 0, !s.hotelsWithoutRoute.contains(hotel) {
+                s.hotelsWithoutRoute.append(hotel)
+            }
+        }
+        return s
+    }
+
     // MARK: - iCloud-Ordner (Security-Scoped Bookmark)
 
-    /// Vom Nutzer im Dateien-Dialog gewählten Ordner merken.
     func setBaseFolder(_ url: URL) throws {
         let ok = url.startAccessingSecurityScopedResource()
         defer { if ok { url.stopAccessingSecurityScopedResource() } }
@@ -119,9 +172,6 @@ final class Store: ObservableObject {
         return url
     }
 
-    /// Führt `work` mit Zugriff auf den Jahresordner aus und legt fehlende
-    /// Unterordner an: gewählt "008_Holon" → 008_Holon/SteuerHotelFahrtkosten/2026,
-    /// gewählt "SteuerHotelFahrtkosten" → …/2026, gewählt "2026" → direkt.
     @discardableResult
     func withYearFolder<T>(year: Int, _ work: (URL) throws -> T) throws -> T {
         guard let base = resolveBaseFolder() else { throw StoreError.noFolder }
@@ -142,14 +192,14 @@ final class Store: ObservableObject {
 
     // MARK: - Belege (PDF)
 
-    /// Dateiname nach Nomenklatur: CW17_SleepInn_01.pdf
-    /// (Index = Position der Buchung in der Woche, 01/02/03 …)
-    static func receiptName(cw: Int, hotel: String, index: Int) -> String {
-        String(format: "CW%d_%@_%02d.pdf", cw, fileToken(hotel), index)
+    /// Dateiname nach Nomenklatur: 2026-CW17_SleepInn_01.pdf
+    /// Jahr zuerst, damit die Datei auch außerhalb des Jahresordners
+    /// eindeutig ist und chronologisch sortiert.
+    static func receiptName(year: Int, cw: Int, hotel: String, index: Int) -> String {
+        String(format: "%d-CW%02d_%@_%02d.pdf", year, cw, fileToken(hotel), index)
     }
 
-    /// Hotelname → Dateinamens-Baustein: "B&B" → "BaB", Umlaute ausgeschrieben,
-    /// alles andere Nicht-Alphanumerische entfernt.
+    /// Hotelname -> Dateinamens-Baustein: "B&B" -> "BaB", Umlaute ausgeschrieben.
     static func fileToken(_ s: String) -> String {
         var t = s
         for (k, v) in [("&", "a"), ("ä", "ae"), ("ö", "oe"), ("ü", "ue"),
@@ -160,10 +210,8 @@ final class Store: ObservableObject {
         return t.isEmpty ? "Hotel" : t
     }
 
-    /// Kopiert ein gewähltes PDF in den Jahresordner unter dem Nomenklatur-Namen.
-    /// Gibt den Dateinamen zurück.
     func importReceipt(from source: URL, year: Int, cw: Int, hotel: String, index: Int) throws -> String {
-        let name = Store.receiptName(cw: cw, hotel: hotel, index: index)
+        let name = Store.receiptName(year: year, cw: cw, hotel: hotel, index: index)
         let ok = source.startAccessingSecurityScopedResource()
         defer { if ok { source.stopAccessingSecurityScopedResource() } }
         try withYearFolder(year: year) { dir in
@@ -183,7 +231,6 @@ final class Store: ObservableObject {
         let modified: Date
     }
 
-    /// Alle Dateien im Jahresordner (PDF zuerst, dann Rest), alphabetisch.
     func listReceipts(year: Int) -> [ReceiptInfo] {
         (try? withYearFolder(year: year) { dir -> [ReceiptInfo] in
             let urls = (try? FileManager.default.contentsOfDirectory(
@@ -207,7 +254,6 @@ final class Store: ObservableObject {
         }
     }
 
-    /// Kopiert einen Beleg in einen temporären Ordner (für Vorschau/Teilen).
     func tempCopyOfReceipt(year: Int, name: String) throws -> URL {
         try withYearFolder(year: year) { dir in
             let tmp = FileManager.default.temporaryDirectory.appendingPathComponent(name)
@@ -219,15 +265,12 @@ final class Store: ObservableObject {
         }
     }
 
-    // MARK: - Export (CSV-Fallback wie die Excel + JSON-Backup)
+    // MARK: - Export
 
-    /// Schreibt Berichtsheft_<Jahr>.csv (Auswertung wie die Excel),
-    /// Berichtsheft_<Jahr>_Tage.csv (alle Tageseinträge) und
-    /// Berichtsheft_<Jahr>.json (komplettes Backup) in den Jahresordner.
-    /// Gibt die Namen der geschriebenen Dateien zurück.
     func exportAll(year: Int) throws -> [String] {
         let summary = summaryCSV(year: year)
-        let daysCSV = daysCSV(year: year)
+        let daysText = daysCSV(year: year)
+        let taxText = taxCSV(year: year)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let json = (try? encoder.encode(data.year(year))) ?? Data()
@@ -235,7 +278,8 @@ final class Store: ObservableObject {
         return try withYearFolder(year: year) { dir -> [String] in
             let files = [
                 ("Berichtsheft_\(year).csv", Data(summary.utf8)),
-                ("Berichtsheft_\(year)_Tage.csv", Data(daysCSV.utf8)),
+                ("Berichtsheft_\(year)_Tage.csv", Data(daysText.utf8)),
+                ("Berichtsheft_\(year)_Steuer.csv", Data(taxText.utf8)),
                 ("Berichtsheft_\(year).json", json),
             ]
             for (name, raw) in files {
@@ -245,33 +289,30 @@ final class Store: ObservableObject {
         }
     }
 
-    /// Auswertung, Spalten wie die Excel plus Fahrten/km/Prüfsumme;
-    /// Semikolon + Dezimalkomma, damit deutsches Excel die Datei direkt öffnet.
+    /// Auswertung, Spalten wie die Excel plus Fahrten und Prüfsumme.
     func summaryCSV(year: Int) -> String {
-        var lines = ["CW;Hotel;Nächte;Summe;PB Tage;HO Tage;FT;U;EZ;Kind_Krank;Krank;Fahrten;km;Tage erfasst"]
+        var lines = ["CW;Hotel;Nächte;Summe;PB Tage;HO Tage;FT;U;EZ;Kind_Krank;Krank;Heimfahrten;Fahrtage;km einfach;Pauschale;Tage erfasst"]
         let yearData = data.year(year)
         var tot = (nights: 0, amount: 0.0, pb: 0, ho: 0, ft: 0, u: 0, ez: 0, kk: 0, kr: 0,
-                   trips: 0, km: 0.0)
+                   home: 0, days: 0, allow: 0.0)
 
         for cw in 1...CW.weeksIn(year: year) {
             let w = yearData.week(cw: cw)
             if w.isEmpty {
-                lines.append("\(cw);;;;;;;;;;;;;")
+                lines.append("\(cw);;;;;;;;;;;;;;;")
                 continue
             }
             let pb = w.count(.pb), ho = w.count(.ho), ft = w.count(.ft)
             let u = w.count(.urlaub), ez = w.count(.ez)
             let kk = w.count(.kindKrank), kr = w.count(.krank)
-            let km = kilometers(w)
+            let allow = weekAllowance(w)
             let check = w.isComplete ? "5/5" : "\(w.weekdaysFilled)/5 !"
-            lines.append("\(cw);\(w.hotelLabel);\(w.nights);\(Store.german(w.amount));\(pb);\(ho);\(ft);\(u);\(ez);\(kk);\(kr);\(w.trips);\(Store.german(km));\(check)")
+            lines.append("\(cw);\(w.hotelLabel);\(w.nights);\(Store.german(w.amount));\(pb);\(ho);\(ft);\(u);\(ez);\(kk);\(kr);\(w.homeTrips);\(w.commuteDays);\(Store.german(commuteKm(w)));\(Store.german(allow));\(check)")
             tot = (tot.nights + w.nights, tot.amount + w.amount, tot.pb + pb, tot.ho + ho,
                    tot.ft + ft, tot.u + u, tot.ez + ez, tot.kk + kk, tot.kr + kr,
-                   tot.trips + w.trips, tot.km + km)
+                   tot.home + w.homeTrips, tot.days + w.commuteDays, tot.allow + allow)
         }
-        lines.append("Summe;;\(tot.nights);\(Store.german(tot.amount));\(tot.pb);\(tot.ho);\(tot.ft);\(tot.u);\(tot.ez);\(tot.kk);\(tot.kr);\(tot.trips);\(Store.german(tot.km));")
-        lines.append("")
-        lines.append("Fahrtstrecke;\(Store.csvEscape(data.settings.from)) -> \(Store.csvEscape(data.settings.to));einfach;\(Store.german(data.settings.kmOneWay)) km")
+        lines.append("Summe;;\(tot.nights);\(Store.german(tot.amount));\(tot.pb);\(tot.ho);\(tot.ft);\(tot.u);\(tot.ez);\(tot.kk);\(tot.kr);\(tot.home);\(tot.days);;\(Store.german(tot.allow));")
         return "\u{FEFF}" + lines.joined(separator: "\r\n") + "\r\n"
     }
 
@@ -286,6 +327,23 @@ final class Store: ObservableObject {
                 lines.append("\(w.cw);\(date);\(CW.dayNames[i]);\(day.kind.short);\(Store.csvEscape(day.activity));\(Store.csvEscape(day.location))")
             }
         }
+        return "\u{FEFF}" + lines.joined(separator: "\r\n") + "\r\n"
+    }
+
+    /// Zusammenfassung fürs Finanzamt / zum Abtippen in die Steuersoftware.
+    func taxCSV(year: Int) -> String {
+        let s = taxSummary(year: year)
+        let set = data.settings
+        var lines = ["Position;Menge;Einheit;Betrag EUR"]
+        lines.append("Übernachtungskosten (Zweitunterkunft);\(s.nights);Nächte;\(Store.german(s.lodging))")
+        lines.append("Familienheimfahrten;\(s.homeTrips);Fahrten;\(Store.german(s.homeAllowance))")
+        lines.append("  davon einfache Strecke;\(Store.german(set.kmHomeToWork));km;")
+        lines.append("Fahrten Unterkunft -> erste Tätigkeitsstätte;\(s.commuteDays);Tage;\(Store.german(s.commuteAllowance))")
+        lines.append("Entfernungspauschale gesamt;;;\(Store.german(s.totalAllowance))")
+        lines.append("")
+        lines.append("Annahme;erste Tätigkeitsstätte = \(Store.csvEscape(set.workAddress)); doppelte Haushaltsführung;")
+        lines.append("Sätze;\(Store.german(set.rateFirst)) EUR/km bis \(Store.german(set.thresholdKm)) km;\(Store.german(set.rateAbove)) EUR/km darüber;")
+        lines.append("Hinweis;Ohne Gewähr - steuerliche Einordnung bitte pruefen lassen;;")
         return "\u{FEFF}" + lines.joined(separator: "\r\n") + "\r\n"
     }
 

@@ -125,7 +125,7 @@ struct WeekEditor: View {
         VStack(spacing: 14) {
             daysCard
             bookingsCard
-            tripsCard
+            travelCard
             noteCard
         }
         .fileImporter(isPresented: $showPDFImporter,
@@ -260,8 +260,8 @@ struct WeekEditor: View {
 
             Button {
                 week.bookings.append(Booking())
-                // Hotelwoche heißt normalerweise: einmal hin, einmal zurück.
-                if week.trips == 0 { week.trips = 2 }
+                // Hotelwoche heißt normalerweise: eine Familienheimfahrt.
+                if week.homeTrips == 0 { week.homeTrips = 1 }
             } label: {
                 Label("Buchung hinzufügen", systemImage: "plus.circle.fill")
                     .font(.subheadline.bold())
@@ -272,105 +272,72 @@ struct WeekEditor: View {
 
     // MARK: Fahrten
 
-    private var tripsCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
+    private var travelCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Fahrten").font(.headline)
                 Spacer()
-                if week.trips > 0 {
-                    Text(store.data.settings.kmOneWay > 0
-                         ? "\(Store.german(store.kilometers(week))) km"
-                         : "km-Strecke in „Belege“ eintragen")
-                        .font(.caption)
-                        .foregroundStyle(store.data.settings.kmOneWay > 0
-                                         ? Theme.green
-                                         : Color(red: 1.0, green: 0.72, blue: 0.3))
-                }
-            }
-            Stepper(value: $week.trips, in: 0...14) {
-                Text("\(week.trips) einfache Fahrten")
-                    .font(.subheadline)
-            }
-            Text("\(store.data.settings.from) ↔ \(store.data.settings.to) · 2 = einmal hin und zurück")
-                .font(.caption2)
-                .foregroundStyle(Theme.secondaryText)
-        }
-        .card()
-    }
-
-    private func bookingRow(index: Int) -> some View {
-        let binding = bookingBinding(index)
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(String(format: "%02d", index + 1))
-                    .font(.system(.caption, design: .monospaced).bold())
-                    .foregroundStyle(Theme.green)
-
-                TextField("Hotel", text: binding.hotel)
-                    .font(.subheadline.bold())
-                    .textFieldStyle(.plain)
-
-                Menu {
-                    ForEach(store.knownHotels(year: year), id: \.self) { hotel in
-                        Button(hotel) { week.bookings[index].hotel = hotel }
-                    }
-                } label: {
-                    Image(systemName: "chevron.down.circle")
-                }
-
-                Button(role: .destructive) {
-                    week.bookings.remove(at: index)
-                } label: {
-                    Image(systemName: "trash")
-                }
-            }
-
-            HStack(spacing: 14) {
-                Stepper(value: binding.nights, in: 0...7) {
-                    Text("\(week.bookings[index].nights) Nächte").font(.subheadline)
-                }
-                .fixedSize()
-
-                Spacer()
-
-                TextField("0,00", value: binding.amount, format: .number.precision(.fractionLength(0...2)))
-                    .keyboardType(.decimalPad)
-                    .multilineTextAlignment(.trailing)
-                    .frame(width: 80)
-                    .textFieldStyle(.roundedBorder)
-                Text("€").foregroundStyle(Theme.secondaryText)
-            }
-
-            Button {
-                importBookingID = week.bookings[index].id
-                showPDFImporter = true
-            } label: {
-                if week.bookings[index].receiptFile.isEmpty {
-                    Label("Beleg (PDF) ablegen → \(Store.receiptName(cw: cw, hotel: week.bookings[index].hotel, index: index + 1))",
-                          systemImage: "doc.badge.plus")
-                        .font(.caption)
-                } else {
-                    Label(week.bookings[index].receiptFile, systemImage: "checkmark.circle.fill")
+                if allowance > 0 {
+                    Text("\(Store.german(allowance)) €")
                         .font(.caption)
                         .foregroundStyle(Theme.green)
                 }
             }
+
+            Stepper(value: $week.homeTrips, in: 0...5) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("\(week.homeTrips) Familienheimfahrt\(week.homeTrips == 1 ? "" : "en")")
+                        .font(.subheadline)
+                    Text(kmLabel(store.data.settings.kmHomeToWork))
+                        .font(.caption2)
+                        .foregroundStyle(Theme.secondaryText)
+                }
+            }
+
+            Divider().overlay(Theme.cardBorder)
+
+            Stepper(value: commuteBinding, in: 0...7) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("\(week.commuteDays) Tage Unterkunft → Arbeit")
+                        .font(.subheadline)
+                    Text(week.commuteDaysOverride == nil
+                         ? "automatisch aus den PB-Tagen"
+                         : "manuell gesetzt")
+                        .font(.caption2)
+                        .foregroundStyle(Theme.secondaryText)
+                }
+            }
+
+            let hotel = week.primaryHotel
+            if !hotel.isEmpty {
+                Text(store.commuteKm(week) > 0
+                     ? "\(hotel): \(Store.german(store.commuteKm(week))) km einfach"
+                     : "Für „\(hotel)“ ist noch keine Strecke hinterlegt — im Tab „Steuer“ eintragen.")
+                    .font(.caption2)
+                    .foregroundStyle(store.commuteKm(week) > 0 ? Theme.secondaryText : Color(red: 1.0, green: 0.72, blue: 0.3))
+            }
+
+            if week.commuteDaysOverride != nil {
+                Button("Wieder automatisch (PB-Tage)") {
+                    week.commuteDaysOverride = nil
+                }
+                .font(.caption)
+            }
         }
-        .padding(.vertical, 2)
+        .card()
     }
 
-    private func handlePDFImport(_ result: Result<[URL], Error>) {
-        defer { importBookingID = nil }
-        do {
-            guard let source = try result.get().first,
-                  let bookingID = importBookingID,
-                  let index = week.bookings.firstIndex(where: { $0.id == bookingID }) else { return }
-            let name = try store.importReceipt(from: source, year: year, cw: cw,
-                                               hotel: week.bookings[index].hotel, index: index + 1)
-            week.bookings[index].receiptFile = name
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+    private var allowance: Double { store.weekAllowance(week) }
+
+    private var commuteBinding: Binding<Int> {
+        Binding(get: { week.commuteDays },
+                set: { week.commuteDaysOverride = $0 })
+    }
+
+    private func kmLabel(_ km: Double) -> String {
+        km > 0
+            ? "\(store.data.settings.homeAddress) → Arbeit · \(Store.german(km)) km einfach"
+            : "Strecke im Tab „Steuer“ eintragen"
     }
 
     // MARK: Notiz

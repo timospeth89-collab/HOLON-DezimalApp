@@ -52,7 +52,7 @@ struct DayEntry: Codable, Equatable {
 
 /// Eine (unabhängige) Hotelbuchung innerhalb einer CW.
 /// Der Index in der Buchungsliste bestimmt den PDF-Namen:
-/// CW17_SleepInn_01.pdf, bei zweiter Buchung _02 usw.
+/// 2026-CW17_SleepInn_01.pdf, bei zweiter Buchung _02 usw.
 struct Booking: Codable, Equatable, Identifiable {
     var id: UUID = UUID()
     var hotel: String = ""
@@ -75,19 +75,24 @@ struct Booking: Codable, Equatable, Identifiable {
     }
 }
 
-/// Eine Kalenderwoche: 7 Tage (Mo–So) + Hotelbuchungen + Fahrten.
+/// Eine Kalenderwoche: 7 Tage (Mo–So), Hotelbuchungen, Fahrten.
 struct Week: Codable, Equatable {
     var cw: Int
     var days: [DayEntry] = Array(repeating: DayEntry(), count: 7)
     var bookings: [Booking] = []
     var note: String = ""
-    /// Anzahl einfacher Fahrten Heimat ↔ Einsatzort in dieser Woche
-    /// (2 = einmal hin und zurück). km = trips × Settings.kmOneWay.
-    var trips: Int = 0
+    /// Familienheimfahrten dieser Woche (doppelte Haushaltsführung):
+    /// Wohnung am Lebensmittelpunkt <-> Zweitunterkunft, i. d. R. 1 pro Woche.
+    var homeTrips: Int = 0
+    /// Tage mit Fahrt Zweitunterkunft -> erste Tätigkeitsstätte.
+    /// nil = automatisch die PB-Tage der Woche verwenden.
+    var commuteDaysOverride: Int?
 
     init(cw: Int) { self.cw = cw }
 
-    enum CodingKeys: String, CodingKey { case cw, days, bookings, note, trips }
+    enum CodingKeys: String, CodingKey {
+        case cw, days, bookings, note, homeTrips, commuteDaysOverride, trips
+    }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -97,7 +102,13 @@ struct Week: Codable, Equatable {
         days = Array(d.prefix(7))
         bookings = try c.decodeIfPresent([Booking].self, forKey: .bookings) ?? []
         note = try c.decodeIfPresent(String.self, forKey: .note) ?? ""
-        trips = try c.decodeIfPresent(Int.self, forKey: .trips) ?? 0
+        commuteDaysOverride = try c.decodeIfPresent(Int.self, forKey: .commuteDaysOverride)
+        if let h = try c.decodeIfPresent(Int.self, forKey: .homeTrips) {
+            homeTrips = h
+        } else if let legacy = try c.decodeIfPresent(Int.self, forKey: .trips) {
+            // Altbestand: dort waren 2 = einmal hin und zurück, also 1 Heimfahrt.
+            homeTrips = max(0, legacy / 2)
+        }
     }
 
     var nights: Int { bookings.reduce(0) { $0 + $1.nights } }
@@ -107,18 +118,20 @@ struct Week: Codable, Equatable {
         days.filter { $0.kind == kind }.count
     }
 
-    /// Prüfsumme: Mo–Fr sollen immer ein Attribut (≠ frei) haben.
-    var weekdaysFilled: Int {
-        days.prefix(5).filter { $0.kind != .frei }.count
-    }
+    /// Tage mit Fahrt zur ersten Tätigkeitsstätte (Vorgabe: PB-Tage).
+    var commuteDays: Int { commuteDaysOverride ?? count(.pb) }
 
+    /// Hotel, auf das sich die Tagesstrecke bezieht (erste Buchung der Woche).
+    var primaryHotel: String { bookings.first(where: { !$0.hotel.isEmpty })?.hotel ?? "" }
+
+    /// Prüfsumme: Mo–Fr sollen immer ein Attribut (≠ frei) haben.
+    var weekdaysFilled: Int { days.prefix(5).filter { $0.kind != .frei }.count }
     var isComplete: Bool { weekdaysFilled == 5 }
 
     /// Hotelspalte wie in der Excel: Hotelname(n), oder Wochen-Art wenn kein Hotel.
     var hotelLabel: String {
         let hotels = bookings.map(\.hotel).filter { !$0.isEmpty }
         if !hotels.isEmpty { return hotels.joined(separator: " + ") }
-        // Woche ohne Hotel: dominante Tagesart als Label (wie "HO", "EZ", "Urlaub" in der Excel)
         let workdays = days.prefix(5).map(\.kind).filter { $0 != .frei }
         guard let dominant = Dictionary(grouping: workdays, by: { $0 })
             .max(by: { $0.value.count < $1.value.count })?.key else { return "" }
@@ -131,26 +144,73 @@ struct Week: Codable, Equatable {
     }
 
     var isEmpty: Bool {
-        bookings.isEmpty && note.isEmpty && trips == 0 && days.allSatisfy(\.isEmpty)
+        bookings.isEmpty && note.isEmpty && homeTrips == 0
+            && commuteDaysOverride == nil && days.allSatisfy(\.isEmpty)
     }
 }
 
-/// Fahrtstrecke für die Kilometer-Erfassung (Fahrtkosten fürs Finanzamt).
-struct RouteSettings: Codable, Equatable {
-    var from: String = "Weinbergstr. 27"
-    var to: String = "Elsener Str. 95, 33102 Paderborn"
-    /// Einfache Strecke in km (einmal in den Einstellungen eintragen).
-    var kmOneWay: Double = 0
+/// Einfache Strecke von einem Hotel zur ersten Tätigkeitsstätte.
+struct HotelRoute: Codable, Equatable, Identifiable {
+    var id: UUID = UUID()
+    var hotel: String = ""
+    var km: Double = 0
 
-    init() {}
+    init(hotel: String = "", km: Double = 0) { self.hotel = hotel; self.km = km }
 
-    enum CodingKeys: String, CodingKey { case from, to, kmOneWay }
+    enum CodingKeys: String, CodingKey { case id, hotel, km }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        from = try c.decodeIfPresent(String.self, forKey: .from) ?? "Weinbergstr. 27"
-        to = try c.decodeIfPresent(String.self, forKey: .to) ?? "Elsener Str. 95, 33102 Paderborn"
-        kmOneWay = try c.decodeIfPresent(Double.self, forKey: .kmOneWay) ?? 0
+        id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        hotel = try c.decodeIfPresent(String.self, forKey: .hotel) ?? ""
+        km = try c.decodeIfPresent(Double.self, forKey: .km) ?? 0
+    }
+}
+
+/// Eingaben für die steuerliche Auswertung.
+/// Annahme laut Nutzer: Paderborn ist die **erste Tätigkeitsstätte**,
+/// die Hotelübernachtungen laufen damit über die doppelte Haushaltsführung.
+struct TaxSettings: Codable, Equatable {
+    var homeAddress: String = "Weinbergstr. 27"
+    var workAddress: String = "Elsener Str. 95, 33102 Paderborn"
+    /// Einfache Strecke Wohnung <-> erste Tätigkeitsstätte (Familienheimfahrt).
+    var kmHomeToWork: Double = 0
+    /// Je Hotel die einfache Strecke zur ersten Tätigkeitsstätte.
+    var hotelRoutes: [HotelRoute] = []
+    /// Entfernungspauschale: Satz für die ersten `thresholdKm` Kilometer …
+    var rateFirst: Double = 0.30
+    /// … und ab dem Kilometer danach.
+    var rateAbove: Double = 0.38
+    var thresholdKm: Double = 20
+
+    init() {}
+
+    enum CodingKeys: String, CodingKey {
+        case homeAddress, workAddress, kmHomeToWork, hotelRoutes
+        case rateFirst, rateAbove, thresholdKm
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        homeAddress = try c.decodeIfPresent(String.self, forKey: .homeAddress) ?? "Weinbergstr. 27"
+        workAddress = try c.decodeIfPresent(String.self, forKey: .workAddress) ?? "Elsener Str. 95, 33102 Paderborn"
+        kmHomeToWork = try c.decodeIfPresent(Double.self, forKey: .kmHomeToWork) ?? 0
+        hotelRoutes = try c.decodeIfPresent([HotelRoute].self, forKey: .hotelRoutes) ?? []
+        rateFirst = try c.decodeIfPresent(Double.self, forKey: .rateFirst) ?? 0.30
+        rateAbove = try c.decodeIfPresent(Double.self, forKey: .rateAbove) ?? 0.38
+        thresholdKm = try c.decodeIfPresent(Double.self, forKey: .thresholdKm) ?? 20
+    }
+
+    /// Entfernungspauschale für **eine** Fahrt über `distance` km einfacher Strecke.
+    func allowance(forDistance distance: Double) -> Double {
+        guard distance > 0 else { return 0 }
+        let first = min(distance, thresholdKm) * rateFirst
+        let above = max(0, distance - thresholdKm) * rateAbove
+        return first + above
+    }
+
+    func km(forHotel hotel: String) -> Double {
+        hotelRoutes.first(where: { $0.hotel.caseInsensitiveCompare(hotel) == .orderedSame })?.km ?? 0
     }
 }
 
@@ -185,7 +245,7 @@ struct YearData: Codable, Equatable {
 
 struct AppData: Codable, Equatable {
     var years: [YearData] = []
-    var settings: RouteSettings = RouteSettings()
+    var settings: TaxSettings = TaxSettings()
 
     init() {}
 
@@ -194,7 +254,7 @@ struct AppData: Codable, Equatable {
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         years = try c.decodeIfPresent([YearData].self, forKey: .years) ?? []
-        settings = try c.decodeIfPresent(RouteSettings.self, forKey: .settings) ?? RouteSettings()
+        settings = try c.decodeIfPresent(TaxSettings.self, forKey: .settings) ?? TaxSettings()
     }
 
     func year(_ y: Int) -> YearData {
@@ -220,31 +280,23 @@ enum CW {
         return c
     }
 
-    /// Anzahl ISO-Wochen im Jahr (52 oder 53) — Woche des 28. Dezember.
     static func weeksIn(year: Int) -> Int {
         let c = calendar
         let dec28 = c.date(from: DateComponents(year: year, month: 12, day: 28))!
         return c.component(.weekOfYear, from: dec28)
     }
 
-    /// Montag einer Kalenderwoche.
     static func monday(year: Int, cw: Int) -> Date? {
         calendar.date(from: DateComponents(weekday: 2, weekOfYear: cw, yearForWeekOfYear: year))
     }
 
-    /// Datum eines Wochentags (0 = Mo … 6 = So) in einer CW.
     static func date(year: Int, cw: Int, dayIndex: Int) -> Date? {
         guard let mon = monday(year: year, cw: cw) else { return nil }
         return calendar.date(byAdding: .day, value: dayIndex, to: mon)
     }
 
-    static var currentYear: Int {
-        calendar.component(.yearForWeekOfYear, from: Date())
-    }
-
-    static var currentWeek: Int {
-        calendar.component(.weekOfYear, from: Date())
-    }
+    static var currentYear: Int { calendar.component(.yearForWeekOfYear, from: Date()) }
+    static var currentWeek: Int { calendar.component(.weekOfYear, from: Date()) }
 
     static let dayNames = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 }

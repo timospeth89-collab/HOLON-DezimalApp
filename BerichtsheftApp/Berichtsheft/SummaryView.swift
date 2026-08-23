@@ -69,10 +69,10 @@ struct SummaryView: View {
 
     // MARK: Jahres-Kacheln
 
-    private var totals: (nights: Int, amount: Double, pb: Int, ho: Int, trips: Int, km: Double) {
+    private var totals: (nights: Int, amount: Double, pb: Int, ho: Int, home: Int, allowance: Double) {
         yearData.weeks.reduce((0, 0.0, 0, 0, 0, 0.0)) { acc, w in
             (acc.0 + w.nights, acc.1 + w.amount, acc.2 + w.count(.pb), acc.3 + w.count(.ho),
-             acc.4 + w.trips, acc.5 + store.kilometers(w))
+             acc.4 + w.homeTrips, acc.5 + store.weekAllowance(w))
         }
     }
 
@@ -81,12 +81,12 @@ struct SummaryView: View {
             HStack(spacing: 10) {
                 statCard("Nächte", "\(totals.nights)")
                 statCard("Hotel €", Store.german(totals.amount))
-                statCard("km", Store.german(totals.km))
+                statCard("Pauschale €", Store.german(totals.allowance))
             }
             HStack(spacing: 10) {
                 statCard("PB Tage", "\(totals.pb)")
                 statCard("HO Tage", "\(totals.ho)")
-                statCard("Fahrten", "\(totals.trips)")
+                statCard("Heimfahrten", "\(totals.home)")
             }
         }
     }
@@ -135,8 +135,9 @@ struct SummaryView: View {
                     ForEach(countCols) { col in
                         Text(col.title).gridColumnAlignment(.trailing)
                     }
-                    Text("Fahrt").gridColumnAlignment(.trailing)
-                    Text("km").gridColumnAlignment(.trailing)
+                    Text("Heim").gridColumnAlignment(.trailing)
+                    Text("Tage").gridColumnAlignment(.trailing)
+                    Text("€").gridColumnAlignment(.trailing)
                 }
                 .font(.caption.bold())
                 .foregroundStyle(Theme.secondaryText)
@@ -165,8 +166,9 @@ struct SummaryView: View {
                             Text(n > 0 ? "\(n)" : "")
                                 .foregroundStyle(Theme.kindColor(col.kind))
                         }
-                        Text(w.trips > 0 ? "\(w.trips)" : "")
-                        Text(w.trips > 0 ? Store.german(store.kilometers(w)) : "")
+                        Text(w.homeTrips > 0 ? "\(w.homeTrips)" : "")
+                        Text(w.commuteDays > 0 ? "\(w.commuteDays)" : "")
+                        Text(store.weekAllowance(w) > 0 ? Store.german(store.weekAllowance(w)) : "")
                     }
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(w.isEmpty ? Theme.secondaryText.opacity(0.5) : .primary)
@@ -183,8 +185,9 @@ struct SummaryView: View {
                     ForEach(countCols) { col in
                         Text("\(sumCount(col.kind))")
                     }
-                    Text("\(totals.trips)")
-                    Text(Store.german(totals.km))
+                    Text("\(totals.home)")
+                    Text("\(sumCommuteDays)")
+                    Text(Store.german(totals.allowance))
                 }
                 .font(.system(.caption, design: .monospaced).bold())
                 .foregroundStyle(Theme.green)
@@ -196,6 +199,7 @@ struct SummaryView: View {
 
     private var sumNights: Int { yearData.weeks.reduce(0) { $0 + $1.nights } }
     private var sumAmount: Double { yearData.weeks.reduce(0) { $0 + $1.amount } }
+    private var sumCommuteDays: Int { yearData.weeks.reduce(0) { $0 + $1.commuteDays } }
     private func sumCount(_ kind: DayKind) -> Int {
         yearData.weeks.reduce(0) { $0 + $1.count(kind) }
     }

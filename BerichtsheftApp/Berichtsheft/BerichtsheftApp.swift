@@ -25,6 +25,8 @@ struct RootView: View {
                 .tabItem { Label("Woche", systemImage: "calendar") }
             SummaryView()
                 .tabItem { Label("Auswertung", systemImage: "tablecells") }
+            TaxView()
+                .tabItem { Label("Steuer", systemImage: "eurosign.circle") }
             ReceiptsView()
                 .tabItem { Label("Belege", systemImage: "folder") }
         }
