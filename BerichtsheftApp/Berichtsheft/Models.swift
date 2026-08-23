@@ -111,6 +111,19 @@ struct Week: Codable, Equatable {
         }
     }
 
+    /// Explizit, weil `trips` nur noch ein Lese-Schlüssel für Altbestände ist
+    /// und keine gespeicherte Eigenschaft mehr hat — sonst kann Swift
+    /// `encode(to:)` nicht synthetisieren.
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(cw, forKey: .cw)
+        try c.encode(days, forKey: .days)
+        try c.encode(bookings, forKey: .bookings)
+        try c.encode(note, forKey: .note)
+        try c.encode(homeTrips, forKey: .homeTrips)
+        try c.encodeIfPresent(commuteDaysOverride, forKey: .commuteDaysOverride)
+    }
+
     var nights: Int { bookings.reduce(0) { $0 + $1.nights } }
     var amount: Double { bookings.reduce(0) { $0 + $1.amount } }
 
