@@ -270,6 +270,84 @@ struct WeekEditor: View {
         .card()
     }
 
+    private func bookingRow(index: Int) -> some View {
+        let binding = bookingBinding(index)
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(String(format: "%02d", index + 1))
+                    .font(.system(.caption, design: .monospaced).bold())
+                    .foregroundStyle(Theme.green)
+
+                TextField("Hotel", text: binding.hotel)
+                    .font(.subheadline.bold())
+                    .textFieldStyle(.plain)
+
+                Menu {
+                    ForEach(store.knownHotels(year: year), id: \.self) { hotel in
+                        Button(hotel) { week.bookings[index].hotel = hotel }
+                    }
+                } label: {
+                    Image(systemName: "chevron.down.circle")
+                }
+
+                Button(role: .destructive) {
+                    week.bookings.remove(at: index)
+                } label: {
+                    Image(systemName: "trash")
+                }
+            }
+
+            HStack(spacing: 14) {
+                Stepper(value: binding.nights, in: 0...7) {
+                    Text("\(week.bookings[index].nights) Nächte").font(.subheadline)
+                }
+                .fixedSize()
+
+                Spacer()
+
+                TextField("0,00", value: binding.amount,
+                          format: .number.precision(.fractionLength(0...2)))
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 80)
+                    .textFieldStyle(.roundedBorder)
+                Text("€").foregroundStyle(Theme.secondaryText)
+            }
+
+            Button {
+                importBookingID = week.bookings[index].id
+                showPDFImporter = true
+            } label: {
+                if week.bookings[index].receiptFile.isEmpty {
+                    Label("Beleg (PDF) ablegen → \(Store.receiptName(year: year, cw: cw, hotel: week.bookings[index].hotel, index: index + 1))",
+                          systemImage: "doc.badge.plus")
+                        .font(.caption)
+                } else {
+                    Label(week.bookings[index].receiptFile, systemImage: "checkmark.circle.fill")
+                        .font(.caption)
+                        .foregroundStyle(Theme.green)
+                }
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func handlePDFImport(_ result: Result<[URL], Error>) {
+        defer { importBookingID = nil }
+        do {
+            guard let source = try result.get().first,
+                  let bookingID = importBookingID,
+                  let index = week.bookings.firstIndex(where: { $0.id == bookingID })
+            else { return }
+            let name = try store.importReceipt(from: source, year: year, cw: cw,
+                                               hotel: week.bookings[index].hotel,
+                                               index: index + 1)
+            week.bookings[index].receiptFile = name
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     // MARK: Fahrten
 
     private var travelCard: some View {
