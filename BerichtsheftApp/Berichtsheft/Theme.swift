@@ -13,6 +13,7 @@ enum Theme {
         switch kind {
         case .pb:        return green
         case .ho:        return Color(red: 0.35, green: 0.65, blue: 1.0)
+        case .dienstreise: return Color(red: 0.25, green: 0.82, blue: 0.78)
         case .ft:        return Color(red: 1.0, green: 0.72, blue: 0.3)
         case .urlaub:    return Color(red: 1.0, green: 0.55, blue: 0.45)
         case .ez:        return Color(red: 0.75, green: 0.55, blue: 1.0)

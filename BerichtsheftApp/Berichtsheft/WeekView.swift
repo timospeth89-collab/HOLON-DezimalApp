@@ -154,6 +154,7 @@ struct WeekEditor: View {
                 Menu {
                     Button("Mo–Fr vor Ort (PB)") { fill(.pb) }
                     Button("Mo–Fr Home Office") { fill(.ho) }
+                    Button("Mo–Fr Dienstreise") { fill(.dienstreise) }
                     Button("Mo–Fr Urlaub") { fill(.urlaub) }
                     Button("Mo–Fr Elternzeit") { fill(.ez) }
                     Button("Woche leeren", role: .destructive) { clearDays() }

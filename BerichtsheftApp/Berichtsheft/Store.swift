@@ -291,28 +291,28 @@ final class Store: ObservableObject {
 
     /// Auswertung, Spalten wie die Excel plus Fahrten und Prüfsumme.
     func summaryCSV(year: Int) -> String {
-        var lines = ["CW;Hotel;Nächte;Summe;PB Tage;HO Tage;FT;U;EZ;Kind_Krank;Krank;Heimfahrten;Fahrtage;km einfach;Pauschale;Tage erfasst"]
+        var lines = ["CW;Hotel;Nächte;Summe;PB Tage;HO Tage;Dienstreise;FT;U;EZ;Kind_Krank;Krank;Heimfahrten;Fahrtage;km einfach;Pauschale;Tage erfasst"]
         let yearData = data.year(year)
-        var tot = (nights: 0, amount: 0.0, pb: 0, ho: 0, ft: 0, u: 0, ez: 0, kk: 0, kr: 0,
+        var tot = (nights: 0, amount: 0.0, pb: 0, ho: 0, dr: 0, ft: 0, u: 0, ez: 0, kk: 0, kr: 0,
                    home: 0, days: 0, allow: 0.0)
 
         for cw in 1...CW.weeksIn(year: year) {
             let w = yearData.week(cw: cw)
             if w.isEmpty {
-                lines.append("\(cw);;;;;;;;;;;;;;;")
+                lines.append("\(cw);;;;;;;;;;;;;;;;")
                 continue
             }
-            let pb = w.count(.pb), ho = w.count(.ho), ft = w.count(.ft)
+            let pb = w.count(.pb), ho = w.count(.ho), dr = w.count(.dienstreise), ft = w.count(.ft)
             let u = w.count(.urlaub), ez = w.count(.ez)
             let kk = w.count(.kindKrank), kr = w.count(.krank)
             let allow = weekAllowance(w)
             let check = w.isComplete ? "5/5" : "\(w.weekdaysFilled)/5 !"
-            lines.append("\(cw);\(w.hotelLabel);\(w.nights);\(Store.german(w.amount));\(pb);\(ho);\(ft);\(u);\(ez);\(kk);\(kr);\(w.homeTrips);\(w.commuteDays);\(Store.german(commuteKm(w)));\(Store.german(allow));\(check)")
-            tot = (tot.nights + w.nights, tot.amount + w.amount, tot.pb + pb, tot.ho + ho,
+            lines.append("\(cw);\(w.hotelLabel);\(w.nights);\(Store.german(w.amount));\(pb);\(ho);\(dr);\(ft);\(u);\(ez);\(kk);\(kr);\(w.homeTrips);\(w.commuteDays);\(Store.german(commuteKm(w)));\(Store.german(allow));\(check)")
+            tot = (tot.nights + w.nights, tot.amount + w.amount, tot.pb + pb, tot.ho + ho, tot.dr + dr,
                    tot.ft + ft, tot.u + u, tot.ez + ez, tot.kk + kk, tot.kr + kr,
                    tot.home + w.homeTrips, tot.days + w.commuteDays, tot.allow + allow)
         }
-        lines.append("Summe;;\(tot.nights);\(Store.german(tot.amount));\(tot.pb);\(tot.ho);\(tot.ft);\(tot.u);\(tot.ez);\(tot.kk);\(tot.kr);\(tot.home);\(tot.days);;\(Store.german(tot.allow));")
+        lines.append("Summe;;\(tot.nights);\(Store.german(tot.amount));\(tot.pb);\(tot.ho);\(tot.dr);\(tot.ft);\(tot.u);\(tot.ez);\(tot.kk);\(tot.kr);\(tot.home);\(tot.days);;\(Store.german(tot.allow));")
         return "\u{FEFF}" + lines.joined(separator: "\r\n") + "\r\n"
     }
 

@@ -118,7 +118,8 @@ struct SummaryView: View {
 
     private let countCols: [CountColumn] = [
         .init(title: "PB", kind: .pb), .init(title: "HO", kind: .ho),
-        .init(title: "FT", kind: .ft), .init(title: "U", kind: .urlaub),
+        .init(title: "DR", kind: .dienstreise), .init(title: "FT", kind: .ft),
+        .init(title: "U", kind: .urlaub),
         .init(title: "EZ", kind: .ez), .init(title: "KiKr", kind: .kindKrank),
         .init(title: "Kr", kind: .krank),
     ]

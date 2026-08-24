@@ -5,6 +5,7 @@ import Foundation
 enum DayKind: String, Codable, CaseIterable, Identifiable {
     case pb        = "PB"
     case ho        = "HO"
+    case dienstreise = "DR"
     case ft        = "FT"
     case urlaub    = "U"
     case ez        = "EZ"
@@ -18,6 +19,7 @@ enum DayKind: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .pb:        return "PB (vor Ort)"
         case .ho:        return "Home Office"
+        case .dienstreise: return "Dienstreise"
         case .ft:        return "Feiertag"
         case .urlaub:    return "Urlaub"
         case .ez:        return "Elternzeit"
