@@ -103,7 +103,7 @@ struct TaxView: View {
         let settings = store.settingsBinding
         return VStack(alignment: .leading, spacing: 8) {
             Text("Familienheimfahrt").font(.headline)
-            field("Von", text: settings.homeAddress, placeholder: "Weinbergstr. 27")
+            field("Von", text: settings.homeAddress, placeholder: "Weinbergstr. 27, 63936 Schneeberg")
             field("Nach", text: settings.workAddress, placeholder: "Elsener Str. 95, Paderborn")
             HStack {
                 Text("km").font(.caption).foregroundStyle(Theme.secondaryText).frame(width: 38, alignment: .leading)

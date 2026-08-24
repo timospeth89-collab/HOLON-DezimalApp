@@ -184,7 +184,7 @@ struct HotelRoute: Codable, Equatable, Identifiable {
 /// Annahme laut Nutzer: Paderborn ist die **erste Tätigkeitsstätte**,
 /// die Hotelübernachtungen laufen damit über die doppelte Haushaltsführung.
 struct TaxSettings: Codable, Equatable {
-    var homeAddress: String = "Weinbergstr. 27"
+    var homeAddress: String = "Weinbergstr. 27, 63936 Schneeberg"
     var workAddress: String = "Elsener Str. 95, 33102 Paderborn"
     /// Einfache Strecke Wohnung <-> erste Tätigkeitsstätte (Familienheimfahrt).
     var kmHomeToWork: Double = 0
@@ -205,7 +205,7 @@ struct TaxSettings: Codable, Equatable {
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        homeAddress = try c.decodeIfPresent(String.self, forKey: .homeAddress) ?? "Weinbergstr. 27"
+        homeAddress = try c.decodeIfPresent(String.self, forKey: .homeAddress) ?? "Weinbergstr. 27, 63936 Schneeberg"
         workAddress = try c.decodeIfPresent(String.self, forKey: .workAddress) ?? "Elsener Str. 95, 33102 Paderborn"
         kmHomeToWork = try c.decodeIfPresent(Double.self, forKey: .kmHomeToWork) ?? 0
         hotelRoutes = try c.decodeIfPresent([HotelRoute].self, forKey: .hotelRoutes) ?? []
