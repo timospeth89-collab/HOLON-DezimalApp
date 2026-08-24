@@ -160,24 +160,42 @@ struct TaxView: View {
 
     private func hotelRow(index: Int) -> some View {
         let routes = store.settingsBinding.hotelRoutes
-        return HStack {
-            TextField("Hotel", text: routes[index].hotel)
-                .font(.subheadline)
-                .textFieldStyle(.plain)
-            TextField("0", value: routes[index].km, format: .number.precision(.fractionLength(0...1)))
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .frame(width: 70)
-                .textFieldStyle(.roundedBorder)
-            Text("km").font(.caption).foregroundStyle(Theme.secondaryText)
-            Button(role: .destructive) {
-                store.data.settings.hotelRoutes.remove(at: index)
-                store.save()
-            } label: {
-                Image(systemName: "trash").font(.caption)
+        return VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                TextField("Hotel", text: routes[index].hotel)
+                    .font(.subheadline)
+                    .textFieldStyle(.plain)
+                TextField("0", value: routes[index].km, format: .number.precision(.fractionLength(0...1)))
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 70)
+                    .textFieldStyle(.roundedBorder)
+                Text("km").font(.caption).foregroundStyle(Theme.secondaryText)
+                Button(role: .destructive) {
+                    store.data.settings.hotelRoutes.remove(at: index)
+                    store.save()
+                } label: {
+                    Image(systemName: "trash").font(.caption)
+                }
             }
+            TextField("Adresse (Gedächtnisstütze fürs km-Ablesen in Maps)",
+                      text: routes[index].address)
+                .font(.caption2)
+                .foregroundStyle(Theme.secondaryText)
+                .textFieldStyle(.plain)
         }
     }
+
+    /// Vom Nutzer nachgereichte Adressen der 2026 gebuchten Hotels — nur zur
+    /// Anzeige, damit die Beleg-PDFs nicht erneut durchsucht werden müssen.
+    /// Kilometer bleiben Handarbeit: Kartendienste sind aus dieser Umgebung
+    /// heraus nicht erreichbar, die Zahl muss der Nutzer selbst ablesen.
+    private static let knownAddresses: [String: String] = [
+        "B&B": "Bahnhofstraße 31, 33102 Paderborn",
+        "InterCity": "Bahnhofstraße 29, 33102 Paderborn",
+        "SleepInn": "Marienloher Str. 50, 33104 Paderborn",
+        "MotelLutz": "An d. Talle 78a, 33102 Paderborn",
+    ]
 
     /// Für jedes bekannte Hotel eine Zeile anlegen, damit nichts vergessen wird.
     private func ensureHotelRoutes() {
@@ -187,7 +205,10 @@ struct TaxView: View {
                 $0.hotel.caseInsensitiveCompare(hotel) == .orderedSame
             }
             if !exists {
-                store.data.settings.hotelRoutes.append(HotelRoute(hotel: hotel))
+                let address = Self.knownAddresses.first {
+                    $0.key.caseInsensitiveCompare(hotel) == .orderedSame
+                }?.value ?? ""
+                store.data.settings.hotelRoutes.append(HotelRoute(hotel: hotel, address: address))
                 changed = true
             }
         }

@@ -166,16 +166,22 @@ struct Week: Codable, Equatable {
 struct HotelRoute: Codable, Equatable, Identifiable {
     var id: UUID = UUID()
     var hotel: String = ""
+    /// Volladresse als Gedächtnisstütze fürs Kilometer-Ablesen in Maps —
+    /// rein informativ, geht nicht in die Berechnung ein.
+    var address: String = ""
     var km: Double = 0
 
-    init(hotel: String = "", km: Double = 0) { self.hotel = hotel; self.km = km }
+    init(hotel: String = "", address: String = "", km: Double = 0) {
+        self.hotel = hotel; self.address = address; self.km = km
+    }
 
-    enum CodingKeys: String, CodingKey { case id, hotel, km }
+    enum CodingKeys: String, CodingKey { case id, hotel, address, km }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         hotel = try c.decodeIfPresent(String.self, forKey: .hotel) ?? ""
+        address = try c.decodeIfPresent(String.self, forKey: .address) ?? ""
         km = try c.decodeIfPresent(Double.self, forKey: .km) ?? 0
     }
 }
