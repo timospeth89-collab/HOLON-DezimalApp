@@ -1,0 +1,59 @@
+name: Build
+
+# Baut beide Apps für den iOS-Simulator — ohne Signierung, damit kein
+# Entwickler-Team nötig ist. Zweck: Compile-Fehler sofort sichtbar machen,
+# statt sie erst beim Bauen am Mac zu finden.
+on:
+  push:
+    branches: [main, 'claude/**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode-Version
+        run: xcodebuild -version
+
+      - name: Berichtsheft bauen
+        run: |
+          set +e
+          xcodebuild \
+            -project BerichtsheftApp/BerichtsheftApp.xcodeproj \
+            -scheme Berichtsheft \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath build \
+            build > berichtsheft-build.log 2>&1
+          status=$?
+          grep -E "error:" berichtsheft-build.log | sort -u | head -40
+          exit $status
+
+      # Die Vorbefuellung (CW14-33) wird nur wirksam, wenn Seed2026.json
+      # tatsaechlich im App-Bundle landet. Fehlt sie, startet die App still
+      # mit leerer Tabelle — deshalb hier hart pruefen.
+      - name: Seed-Daten im App-Bundle?
+        run: |
+          APP=build/Build/Products/Debug-iphonesimulator/Berichtsheft.app
+          ls -la "$APP"
+          test -f "$APP/Seed2026.json" \
+            || { echo "::error::Seed2026.json fehlt im App-Bundle"; exit 1; }
+          python3 -c "import json;d=json.load(open('$APP/Seed2026.json'));print('Seed ok:',len(d['weeks']),'Wochen')"
+
+      - name: DezimalApp bauen
+        run: |
+          set +e
+          xcodebuild \
+            -project DezimalApp.xcodeproj \
+            -scheme DezimalApp \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build > dezimal-build.log 2>&1
+          status=$?
+          grep -E "error:" dezimal-build.log | sort -u | head -40
+          exit $status

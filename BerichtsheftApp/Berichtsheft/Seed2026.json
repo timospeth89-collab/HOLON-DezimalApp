@@ -1,0 +1,618 @@
+{
+ "year": 2026,
+ "weeks": [
+  {
+   "cw": 14,
+   "days": [
+    {},
+    {},
+    {
+     "kind": "PB",
+     "activity": "Barker Introduction",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "Setup Tools/Laptop/Phone",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "FT",
+     "activity": "Karfreitag"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "B&B",
+     "nights": 2,
+     "amount": 139.73
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 15,
+   "days": [
+    {
+     "kind": "FT",
+     "activity": "Ostermontag"
+    },
+    {
+     "kind": "PB",
+     "activity": "V107 MBE Handover Retest",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "Cloud Test",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "Brake Test - Motion Sickness",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity",
+     "nights": 2,
+     "amount": 115.2
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 16,
+   "days": [
+    {
+     "kind": "HO",
+     "activity": "Trainings"
+    },
+    {
+     "kind": "PB",
+     "activity": "V12 Xoraya - V109/107 CANape XCP Ladelimit - V10 Amuse Event",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "V10 cloudHive Set Point - V109 Release Sheet",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "V010 Beleuchtung Nachts - V109 Release",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "SleepInn",
+     "nights": 2,
+     "amount": 119.48
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 17,
+   "days": [
+    {
+     "kind": "PB",
+     "activity": "V11 GNSS Debug + V11 AD to AWS + Copy Station + V10 Lidar Disconnect",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "V10 Startup GPS Debug + CANoe/CANape fit machen",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "V103 OpenLoop Test + V011 Demo Padersprinter",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "SleepInn",
+     "nights": 2,
+     "amount": 113.3
+    }
+   ],
+   "note": "Priv. Fahrt ElsenerBarker (Di)",
+   "trips": 2
+  },
+  {
+   "cw": 18,
+   "days": [
+    {
+     "kind": "PB",
+     "activity": "V103 OpenLoop",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "V103 Open Loop - V011 Pudo Tests",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "V011 Pudo Tests",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "FT",
+     "activity": "Tag der Arbeit"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "SleepInn",
+     "nights": 2,
+     "amount": 113.3
+    }
+   ],
+   "note": "Priv. Fahrt ElsenerBarker (Mo)",
+   "trips": 2
+  },
+  {
+   "cw": 19,
+   "days": [
+    {
+     "kind": "PB",
+     "activity": "V011 Map Update",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "V109 Release + L4 Ready",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "Warren Driver Training",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "SleepInn",
+     "nights": 2,
+     "amount": 113.3
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 20,
+   "days": [
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "FT",
+     "activity": "Christi Himmelfahrt"
+    },
+    {
+     "kind": "U"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "MotelLutz",
+     "nights": 1,
+     "amount": 61.8
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 21,
+   "days": [
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "U"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "B&B",
+     "nights": 2,
+     "amount": 115.46
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 22,
+   "days": [
+    {
+     "kind": "FT",
+     "activity": "Pfingstmontag"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity",
+     "nights": 2,
+     "amount": 121.6
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 23,
+   "days": [
+    {
+     "kind": "U"
+    },
+    {
+     "kind": "U"
+    },
+    {
+     "kind": "U"
+    },
+    {
+     "kind": "FT",
+     "activity": "Fronleichnam"
+    },
+    {
+     "kind": "U"
+    },
+    {},
+    {}
+   ]
+  },
+  {
+   "cw": 24,
+   "days": [
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ]
+  },
+  {
+   "cw": 25,
+   "days": [
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {},
+    {}
+   ]
+  },
+  {
+   "cw": 26,
+   "days": [
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {},
+    {}
+   ]
+  },
+  {
+   "cw": 27,
+   "days": [
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {},
+    {}
+   ]
+  },
+  {
+   "cw": 28,
+   "days": [
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {
+     "kind": "EZ"
+    },
+    {},
+    {}
+   ]
+  },
+  {
+   "cw": 29,
+   "days": [
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "KiKr"
+    },
+    {
+     "kind": "KiKr"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity",
+     "nights": 2,
+     "amount": 121.6
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 30,
+   "days": [
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity",
+     "nights": 3,
+     "amount": 182.4
+    }
+   ],
+   "note": "2 Buchungen (CW30_1 / CW30_2)",
+   "trips": 2
+  },
+  {
+   "cw": 31,
+   "days": [
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "MotelLutz",
+     "nights": 2,
+     "amount": 123.6
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 32,
+   "days": [
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "U"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity",
+     "nights": 2,
+     "amount": 127.92
+    }
+   ],
+   "trips": 2
+  },
+  {
+   "cw": 33,
+   "days": [
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO"
+    },
+    {
+     "kind": "HO"
+    },
+    {},
+    {}
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity",
+     "nights": 1,
+     "amount": 60.8
+    }
+   ],
+   "trips": 2
+  }
+ ]
+}
