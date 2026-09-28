@@ -1,8 +1,8 @@
 name: Build
 
-# Baut beide Apps für den iOS-Simulator — ohne Signierung, damit kein
-# Entwickler-Team nötig ist. Zweck: Compile-Fehler sofort sichtbar machen,
-# statt sie erst beim Bauen am Mac zu finden.
+# Baut beide Apps für den iOS-Simulator (ohne Signierung, kein Entwickler-Team
+# noetig) und die Berichtsheft-Web-App. Zweck: Fehler sofort sichtbar machen,
+# statt sie erst beim Bauen am Mac / Oeffnen im Browser zu finden.
 on:
   push:
     branches: [main, 'claude/**']
@@ -57,3 +57,14 @@ jobs:
           status=$?
           grep -E "error:" dezimal-build.log | sort -u | head -40
           exit $status
+
+  web-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: berichtsheft.html bauen
+        run: python3 BerichtsheftWeb/build.py
+
+      - name: Datenmodell + Excel-Rundlauf testen
+        run: node BerichtsheftWeb/test/model.test.js

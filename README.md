@@ -1,11 +1,15 @@
 # HOLON-Apps
 
-Zwei iPhone-Apps (SwiftUI, HOLON-Look):
+Zwei iPhone-Apps (SwiftUI, HOLON-Look) und eine Browser-Version:
 
 - **DezimalApp** (`DezimalApp.xcodeproj`) — Dezimal → Hex-BitMask, siehe unten
 - **Berichtsheft** (`BerichtsheftApp/`) — Wochen-/Hotelabrechnung mit
   Excel-Auswertung, CSV-Export und Beleg-Ablage in iCloud Drive,
   siehe [BerichtsheftApp/README.md](BerichtsheftApp/README.md)
+- **Berichtsheft Web** (`BerichtsheftWeb/`) — dieselbe Wochen-/Hotelabrechnung
+  als einzelne HTML-Datei für Chrome auf dem Arbeitsrechner, liest/schreibt
+  direkt eine Excel-Datei im iCloud-Ordner, siehe
+  [BerichtsheftWeb/README.md](BerichtsheftWeb/README.md)
 
 # DezimalApp
 
