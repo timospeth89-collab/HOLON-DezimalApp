@@ -4,8 +4,16 @@
   {
    "cw": 14,
    "days": [
-    {},
-    {},
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
     {
      "kind": "PB",
      "activity": "Barker Introduction",
@@ -13,110 +21,150 @@
     },
     {
      "kind": "PB",
-     "activity": "Setup Tools/Laptop/Phone",
+     "activity": "Setup tools/Laptop/phone",
      "location": "Paderborn"
     },
     {
      "kind": "FT",
-     "activity": "Karfreitag"
+     "activity": "Karfreitag",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "B&B",
      "nights": 2,
-     "amount": 139.73
+     "amount": 139.73,
+     "receiptFile": "2026-CW14_BaB_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 15,
    "days": [
     {
      "kind": "FT",
-     "activity": "Ostermontag"
+     "activity": "Ostermontag",
+     "location": ""
     },
     {
      "kind": "PB",
-     "activity": "V107 MBE Handover Retest",
+     "activity": "-> V107 MBE Handover Retest",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
-     "activity": "Cloud Test",
+     "activity": "-> Cloud Test",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
-     "activity": "Brake Test - Motion Sickness",
+     "activity": "-> Brake Test - Motion Sickness",
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "InterCity",
      "nights": 2,
-     "amount": 115.2
+     "amount": 118.66,
+     "receiptFile": "2026-CW15_InterCity_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 16,
    "days": [
     {
      "kind": "HO",
-     "activity": "Trainings"
+     "activity": "Trainings",
+     "location": ""
     },
     {
      "kind": "PB",
-     "activity": "V12 Xoraya - V109/107 CANape XCP Ladelimit - V10 Amuse Event",
+     "activity": "V12 Xoraya - V109/107 CANAPE xcp ladelimit -  V10 amuse event",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
-     "activity": "V10 cloudHive Set Point - V109 Release Sheet",
+     "activity": "v10 cloudHive set point - v109 Release Sheet",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
-     "activity": "V010 Beleuchtung Nachts - V109 Release",
+     "activity": "V010 Beleuchtung Nachts - v109 Release -",
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "SleepInn",
      "nights": 2,
-     "amount": 119.48
+     "amount": 119.48,
+     "receiptFile": "2026-CW16_SleepInn_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 17,
    "days": [
     {
      "kind": "PB",
-     "activity": "V11 GNSS Debug + V11 AD to AWS + Copy Station + V10 Lidar Disconnect",
+     "activity": "V11 GNSS debug + V11 AD to AWS + Copy Station + V10 Lidar disconnect",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
-     "activity": "V10 Startup GPS Debug + CANoe/CANape fit machen",
+     "activity": "V10 Startup GPS Debug + Klamotten holen + CANoeCANape fit machen Priv.  FAHRT ElsenerBarker",
      "location": "Paderborn"
     },
     {
@@ -125,30 +173,44 @@
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "SleepInn",
      "nights": 2,
-     "amount": 113.3
+     "amount": 113.3,
+     "receiptFile": "2026-CW17_SleepInn_01.pdf"
     }
    ],
-   "note": "Priv. Fahrt ElsenerBarker (Di)",
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 18,
    "days": [
     {
      "kind": "PB",
-     "activity": "V103 OpenLoop",
+     "activity": "V103 OpenLoop Priv.  FAHRT ElsenerBarker",
      "location": "Paderborn"
     },
     {
@@ -162,24 +224,37 @@
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
     {
      "kind": "FT",
-     "activity": "Tag der Arbeit"
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "SleepInn",
      "nights": 2,
-     "amount": 113.3
+     "amount": 113.3,
+     "receiptFile": "2026-CW18_SleepInn_01.pdf"
     }
    ],
-   "note": "Priv. Fahrt ElsenerBarker (Mo)",
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 19,
@@ -200,419 +275,1082 @@
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "SleepInn",
      "nights": 2,
-     "amount": 113.3
+     "amount": 113.3,
+     "receiptFile": "2026-CW19_SleepInn_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 20,
    "days": [
     {
-     "kind": "HO"
-    },
-    {
      "kind": "PB",
+     "activity": "V024 Pudo Test",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "REM HIVE MAAS",
      "location": "Paderborn"
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
     {
      "kind": "FT",
-     "activity": "Christi Himmelfahrt"
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "U"
+     "kind": "U",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "MotelLutz",
      "nights": 1,
-     "amount": 61.8
+     "amount": 61.8,
+     "receiptFile": "2026-CW20_MotelLutz_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 21,
    "days": [
     {
-     "kind": "HO"
-    },
-    {
      "kind": "PB",
+     "activity": "V012 Xbox",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "V012 Xbox",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "V012 Xbox",
      "location": "Paderborn"
     },
     {
-     "kind": "U"
+     "kind": "HO",
+     "activity": "Hive Remote Mission",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "B&B",
      "nights": 2,
-     "amount": 115.46
+     "amount": 115.46,
+     "receiptFile": "2026-CW21_BaB_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 22,
    "days": [
     {
      "kind": "FT",
-     "activity": "Pfingstmontag"
+     "activity": "",
+     "location": ""
     },
     {
      "kind": "PB",
+     "activity": "Mobileye",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "Signalyzer Training",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "Nemo Delivery",
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "Codebeamer",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "InterCity",
      "nights": 2,
-     "amount": 121.6
+     "amount": 125.24,
+     "receiptFile": "2026-CW22_InterCity_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 23,
    "days": [
     {
-     "kind": "U"
+     "kind": "U",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "U"
+     "kind": "U",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "U"
+     "kind": "U",
+     "activity": "",
+     "location": ""
     },
     {
      "kind": "FT",
-     "activity": "Fronleichnam"
+     "activity": "Fronleichnam",
+     "location": ""
     },
     {
-     "kind": "U"
+     "kind": "U",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
-   ]
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
   },
   {
    "cw": 24,
    "days": [
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "Codebeamer 1",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "Codebeamer 2",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "Codebeamer 3",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "Codebeamer 4",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
-   ]
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
   },
   {
    "cw": 25,
    "days": [
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
-   ]
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
   },
   {
    "cw": 26,
    "days": [
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
-   ]
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
   },
   {
    "cw": 27,
    "days": [
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
-   ]
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
   },
   {
    "cw": 28,
    "days": [
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "EZ"
+     "kind": "EZ",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
-   ]
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
   },
   {
    "cw": 29,
    "days": [
     {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
      "kind": "PB",
+     "activity": "Kira KickOff - Messlenkrad",
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "KiKr",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "KiKr",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "KiKr"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
     {
-     "kind": "KiKr"
+     "kind": "frei",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "InterCity",
      "nights": 2,
-     "amount": 121.6
+     "amount": 121.6,
+     "receiptFile": "2026-CW29_InterCity_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 30,
    "days": [
     {
      "kind": "PB",
+     "activity": "V12+V24 FitBox check licence and setup 2 laptops",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "V105 Edag Display+GW Flash",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "V105 Light AD activation",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "Different Trouble shooting",
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "InterCity",
      "nights": 3,
-     "amount": 182.4
+     "amount": 182.4,
+     "receiptFile": "2026-CW30_InterCity_01.pdf"
     }
    ],
-   "note": "2 Buchungen (CW30_1 / CW30_2)",
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 31,
    "days": [
     {
-     "kind": "HO"
-    },
-    {
      "kind": "PB",
+     "activity": "BK L4 Ready Training",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "BK L4 Ready Training",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "BK V103 Buslast + V010 L4",
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "MotelLutz",
      "nights": 2,
-     "amount": 123.6
+     "amount": 123.6,
+     "receiptFile": "2026-CW31_MotelLutz_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 32,
    "days": [
     {
-     "kind": "HO"
-    },
-    {
      "kind": "PB",
+     "activity": "Alignment Kira+",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "Barker",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "V106 Test L4 Ready",
      "location": "Paderborn"
     },
     {
-     "kind": "U"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "InterCity",
      "nights": 2,
-     "amount": 127.92
+     "amount": 127.92,
+     "receiptFile": "2026-CW32_InterCity_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   },
   {
    "cw": 33,
    "days": [
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "",
+     "location": ""
     },
     {
      "kind": "PB",
+     "activity": "BK V106 RTK3000 + V010 L4 Brake Test",
      "location": "Paderborn"
     },
     {
      "kind": "PB",
+     "activity": "BK V106 RTK3000 + V010 L4 Brake Test",
      "location": "Paderborn"
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "App Bitmask + Kira App",
+     "location": ""
     },
     {
-     "kind": "HO"
+     "kind": "HO",
+     "activity": "Kira Confluence",
+     "location": ""
     },
-    {},
-    {}
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "DR",
+     "activity": "Flug Fra -hh",
+     "location": ""
+    }
    ],
    "bookings": [
     {
      "hotel": "InterCity",
      "nights": 1,
-     "amount": 60.8
+     "amount": 60.8,
+     "receiptFile": "2026-CW33_InterCity_01.pdf"
     }
    ],
-   "trips": 2
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 34,
+   "days": [
+    {
+     "kind": "DR",
+     "activity": "Left Seat Theory + L4 V014",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "L4 V104",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "V108 Batteries + Kira",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "Kira Meeting + Verkehrsminister",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "Flug HH-Fra + HO",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Dienstreise Hamburg (5 Nächte, firmenbezahlt — keine eigene Buchung) — Hinweis: Excel nennt 6 Dienstreise-Tage, aus dem Text sind nur 5 Wochentage ableitbar (Mo-Fr); 6. Tag evtl. Reisetag am Wochenende, bitte prüfen.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 35,
+   "days": [
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 36,
+   "days": [
+    {
+     "kind": "DR",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "DR",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "DR",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "DR",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "DR",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Dienstreise Hamburg (4 Nächte, firmenbezahlt — keine eigene Buchung)",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 37,
+   "days": [
+    {
+     "kind": "PB",
+     "activity": "V010 L4brake test+ vcu +rtk SDIC regression test",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "L4 Public record mileage",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity",
+     "nights": 2,
+     "amount": 70.45,
+     "receiptFile": "2026-CW37_InterCity_01.pdf"
+    }
+   ],
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 38,
+   "days": [
+    {
+     "kind": "DR",
+     "activity": "HH L4 RightSeat",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "HH L4 RightSeat",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "HH L4 RightSeat",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "HH L4 RightSeat",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [
+    {
+     "hotel": "InterCity (Hamburg)",
+     "nights": 3,
+     "amount": 68.4,
+     "receiptFile": ""
+    }
+   ],
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 39,
+   "days": [
+    {
+     "kind": "U",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "PB",
+     "activity": "PB -",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "PB - V106 Bring Up",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "PB -",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [
+    {
+     "hotel": "MotelLutz",
+     "nights": 2,
+     "amount": 123.6,
+     "receiptFile": "2026-CW39_MotelLutz_01.pdf"
+    }
+   ],
+   "note": "",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 40,
+   "days": [
+    {
+     "kind": "DR",
+     "activity": "+2h HH V108 lidar [fr 02.10 10-12]",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "HH V106 test",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "HH V106",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "HH V105 Moia +2,25h",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Noch nicht in der Excel bestätigt (Zeile war beim Import leer), bitte gegenprüfen.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 41,
+   "days": [
+    {
+     "kind": "HO",
+     "activity": "prep kira ressources",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "prep kira ressources / claudetraining",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Noch nicht in der Excel bestätigt (Zeile war beim Import leer), bitte gegenprüfen.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
   }
  ]
 }
