@@ -121,10 +121,16 @@ final class Store: ObservableObject {
         var commuteDays = 0
         var commuteKm = 0.0
         var commuteAllowance = 0.0
+        var homeOfficeDays = 0
         /// Hotels, für die noch keine Strecke hinterlegt ist.
         var hotelsWithoutRoute: [String] = []
 
         var totalAllowance: Double { homeAllowance + commuteAllowance }
+
+        /// Homeoffice-Pauschale, gedeckelt auf `homeOfficeCapDays`.
+        func homeOfficeAllowance(_ settings: TaxSettings) -> Double {
+            Double(min(homeOfficeDays, settings.homeOfficeCapDays)) * settings.homeOfficeRate
+        }
     }
 
     func taxSummary(year: Int) -> TaxSummary {
@@ -136,6 +142,7 @@ final class Store: ObservableObject {
             s.homeTrips += w.homeTrips
             s.homeKm += Double(w.homeTrips) * settings.kmHomeToWork
             s.homeAllowance += homeAllowance(w)
+            s.homeOfficeDays += w.count(.ho)
 
             let days = w.commuteDays
             let km = commuteKm(w)
@@ -331,19 +338,60 @@ final class Store: ObservableObject {
     }
 
     /// Zusammenfassung fürs Finanzamt / zum Abtippen in die Steuersoftware.
+    /// Zusammenfassung zum Abtippen in WISO Steuer. Reihenfolge und Gruppierung
+    /// orientieren sich an WISOs Eingabepfaden ("Arbeitnehmer … > Ausgaben
+    /// (Werbungskosten) > …"), damit jede Zeile direkt einem Feld entspricht.
+    /// WISO Steuer hat keine offene Import-Schnittstelle für diese Positionen —
+    /// die Datei ist zum Ablesen/Copy-Paste gedacht, nicht zum Hochladen.
     func taxCSV(year: Int) -> String {
         let s = taxSummary(year: year)
         let set = data.settings
-        var lines = ["Position;Menge;Einheit;Betrag EUR"]
-        lines.append("Übernachtungskosten (Zweitunterkunft);\(s.nights);Nächte;\(Store.german(s.lodging))")
-        lines.append("Familienheimfahrten;\(s.homeTrips);Fahrten;\(Store.german(s.homeAllowance))")
-        lines.append("  davon einfache Strecke;\(Store.german(set.kmHomeToWork));km;")
-        lines.append("Fahrten Unterkunft -> erste Tätigkeitsstätte;\(s.commuteDays);Tage;\(Store.german(s.commuteAllowance))")
-        lines.append("Entfernungspauschale gesamt;;;\(Store.german(s.totalAllowance))")
+        var lines = ["WISO Steuer \(year) — Werte zum Abtippen (kein Datei-Import in WISO möglich)"]
         lines.append("")
-        lines.append("Annahme;erste Tätigkeitsstätte = \(Store.csvEscape(set.workAddress)); doppelte Haushaltsführung;")
-        lines.append("Sätze;\(Store.german(set.rateFirst)) EUR/km bis \(Store.german(set.thresholdKm)) km;\(Store.german(set.rateAbove)) EUR/km darüber;")
-        lines.append("Hinweis;Ohne Gewähr - steuerliche Einordnung bitte pruefen lassen;;")
+
+        lines.append("# Arbeitnehmer > Ausgaben (Werbungskosten) > Entfernungspauschale")
+        lines.append("Feld;Wert")
+        lines.append("Entfernung Wohnung – erste Tätigkeitsstätte (km);\(Store.german(set.kmHomeToWork))")
+        lines.append("Fahrten damit (Familienheimfahrten);\(s.homeTrips)")
+        lines.append("Entfernungspauschale daraus;\(Store.german(s.homeAllowance)) €")
+        lines.append("")
+
+        lines.append("# Arbeitnehmer > Ausgaben (Werbungskosten) > Reisekosten für Auswärtstätigkeiten")
+        lines.append("Feld;Wert")
+        lines.append("Übernachtungskosten Zweitunterkunft (\(s.nights) Nächte);\(Store.german(s.lodging)) €")
+        lines.append("Fahrten Unterkunft -> erste Tätigkeitsstätte (Tage);\(s.commuteDays)")
+        lines.append("  je Fahrt km (siehe Hotel-Strecken unten);;")
+        lines.append("Entfernungspauschale daraus;\(Store.german(s.commuteAllowance)) €")
+        lines.append("")
+
+        lines.append("# Arbeitnehmer > Ausgaben (Werbungskosten) > Homeoffice-Pauschale")
+        lines.append("Feld;Wert")
+        lines.append("Homeoffice-Tage (HO);\(s.homeOfficeDays)")
+        lines.append("  davon anrechenbar (gedeckelt auf \(set.homeOfficeCapDays) Tage);\(min(s.homeOfficeDays, set.homeOfficeCapDays))")
+        lines.append("Homeoffice-Pauschale;\(Store.german(s.homeOfficeAllowance(set))) €")
+        lines.append("")
+
+        lines.append("# Summe Werbungskosten aus dieser App")
+        lines.append("Feld;Wert")
+        lines.append("Entfernungspauschale gesamt;\(Store.german(s.totalAllowance)) €")
+        lines.append("Homeoffice-Pauschale;\(Store.german(s.homeOfficeAllowance(set))) €")
+        lines.append("Übernachtungskosten;\(Store.german(s.lodging)) €")
+        lines.append("Gesamt;\(Store.german(s.totalAllowance + s.homeOfficeAllowance(set) + s.lodging)) €")
+        lines.append("")
+
+        lines.append("# Hotel-Strecken (für die Fahrtage oben)")
+        lines.append("Hotel;Adresse;km einfach")
+        for r in set.hotelRoutes where r.km > 0 {
+            lines.append("\(Store.csvEscape(r.hotel));\(Store.csvEscape(r.address));\(Store.german(r.km))")
+        }
+        lines.append("")
+
+        lines.append("# Annahmen — bitte prüfen, bevor du die Werte überträgst")
+        lines.append("Erste Tätigkeitsstätte;\(Store.csvEscape(set.workAddress))")
+        lines.append("Unterkunft läuft als;doppelte Haushaltsführung")
+        lines.append("Entfernungspauschale-Sätze;\(Store.german(set.rateFirst)) €/km bis \(Store.german(set.thresholdKm)) km, \(Store.german(set.rateAbove)) €/km darüber")
+        lines.append("Homeoffice-Satz;\(Store.german(set.homeOfficeRate)) €/Tag, gedeckelt auf \(set.homeOfficeCapDays) Tage/Jahr")
+        lines.append("Hinweis;Ohne Gewähr — steuerliche Einordnung bitte von einem Steuerberater oder Lohnsteuerhilfeverein prüfen lassen")
         return "\u{FEFF}" + lines.joined(separator: "\r\n") + "\r\n"
     }
 

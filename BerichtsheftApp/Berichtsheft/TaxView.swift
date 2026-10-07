@@ -19,6 +19,7 @@ struct TaxView: View {
                     routeCard
                     hotelCard
                     rateCard
+                    homeOfficeRateCard
                     disclaimerCard
                 }
                 .padding(.horizontal)
@@ -71,6 +72,12 @@ struct TaxView: View {
                 detail: "",
                 value: Store.german(s.totalAllowance),
                 bold: true)
+            Divider().overlay(Theme.cardBorder)
+            row("Homeoffice-Pauschale",
+                detail: s.homeOfficeDays > store.data.settings.homeOfficeCapDays
+                    ? "\(s.homeOfficeDays) Tage, gedeckelt auf \(store.data.settings.homeOfficeCapDays)"
+                    : "\(s.homeOfficeDays) Tage",
+                value: Store.german(s.homeOfficeAllowance(store.data.settings)))
 
             if !s.hotelsWithoutRoute.isEmpty {
                 Label("Ohne Strecke: \(s.hotelsWithoutRoute.joined(separator: ", ")) — unten eintragen, sonst fehlen diese Fahrten.",
@@ -237,6 +244,27 @@ struct TaxView: View {
                 Text("€/km").font(.caption).foregroundStyle(Theme.secondaryText)
             }
             Text("Voreingestellt sind 0,30 € bis 20 km und 0,38 € darüber. Bitte für das jeweilige Jahr gegenprüfen und hier anpassen.")
+                .font(.caption2)
+                .foregroundStyle(Theme.secondaryText)
+        }
+        .card()
+    }
+
+    private var homeOfficeRateCard: some View {
+        let settings = store.settingsBinding
+        return VStack(alignment: .leading, spacing: 8) {
+            Text("Homeoffice-Pauschale").font(.headline)
+            HStack {
+                Text("Satz:").font(.caption).foregroundStyle(Theme.secondaryText)
+                TextField("6,00", value: settings.homeOfficeRate, format: .number.precision(.fractionLength(0...2)))
+                    .keyboardType(.decimalPad).frame(width: 64).textFieldStyle(.roundedBorder)
+                Text("€/Tag").font(.caption).foregroundStyle(Theme.secondaryText)
+                Text("gedeckelt auf").font(.caption).foregroundStyle(Theme.secondaryText)
+                TextField("210", value: settings.homeOfficeCapDays, format: .number)
+                    .keyboardType(.numberPad).frame(width: 52).textFieldStyle(.roundedBorder)
+                Text("Tage/Jahr").font(.caption).foregroundStyle(Theme.secondaryText)
+            }
+            Text("Voreingestellt 6,00 €/Tag, gedeckelt auf 210 Tage (1.260 €/Jahr) — bitte für das jeweilige Steuerjahr gegenprüfen.")
                 .font(.caption2)
                 .foregroundStyle(Theme.secondaryText)
         }

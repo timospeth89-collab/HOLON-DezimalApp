@@ -203,12 +203,17 @@ struct TaxSettings: Codable, Equatable {
     /// … und ab dem Kilometer danach.
     var rateAbove: Double = 0.38
     var thresholdKm: Double = 20
+    /// Homeoffice-Pauschale: Satz je HO-Tag …
+    var homeOfficeRate: Double = 6.0
+    /// … gedeckelt auf diese Anzahl Tage im Jahr (aktuell 210 Tage × 6 € = 1.260 €,
+    /// Stand bei Einbau dieser App — bitte für das jeweilige Steuerjahr prüfen).
+    var homeOfficeCapDays: Int = 210
 
     init() {}
 
     enum CodingKeys: String, CodingKey {
         case homeAddress, workAddress, kmHomeToWork, hotelRoutes
-        case rateFirst, rateAbove, thresholdKm
+        case rateFirst, rateAbove, thresholdKm, homeOfficeRate, homeOfficeCapDays
     }
 
     init(from decoder: Decoder) throws {
@@ -220,6 +225,8 @@ struct TaxSettings: Codable, Equatable {
         rateFirst = try c.decodeIfPresent(Double.self, forKey: .rateFirst) ?? 0.30
         rateAbove = try c.decodeIfPresent(Double.self, forKey: .rateAbove) ?? 0.38
         thresholdKm = try c.decodeIfPresent(Double.self, forKey: .thresholdKm) ?? 20
+        homeOfficeRate = try c.decodeIfPresent(Double.self, forKey: .homeOfficeRate) ?? 6.0
+        homeOfficeCapDays = try c.decodeIfPresent(Int.self, forKey: .homeOfficeCapDays) ?? 210
     }
 
     /// Entfernungspauschale für **eine** Fahrt über `distance` km einfacher Strecke.
