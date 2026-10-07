@@ -73,10 +73,10 @@ Fronleichnam) sitzen auf den richtigen Tagen. Belege-PDFs musst du einmalig
 den Buchungen zuordnen („Beleg (PDF) ablegen" in der jeweiligen Woche) —
 dabei werden sie gleich nach Schema `CW17_SleepInn_01.pdf` umbenannt.
 
-## 4. Optional: 7-Tage-Auto-Refresh wie bei der DezimalApp
+## 4. Auto-Refresh: jede Nacht um 4 Uhr
 
 ```bash
-Tools/refresh-install-berichtsheft.sh --force   # einmal testen
+Tools/refresh-install-berichtsheft.sh   # einmal manuell testen
 ```
 
 Dann als LaunchAgent `~/Library/LaunchAgents/com.timospeth.berichtsheft.refresh.plist`:
@@ -94,17 +94,34 @@ Dann als LaunchAgent `~/Library/LaunchAgents/com.timospeth.berichtsheft.refresh.
         <string>/bin/zsh</string>
         <string><PFAD-ZUM-REPO>/Tools/refresh-install-berichtsheft.sh</string>
     </array>
-    <key>StartInterval</key>
-    <integer>21600</integer>
-    <key>RunAtLoad</key>
-    <true/>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>4</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
 </dict>
 </plist>
 ```
 
+`<PFAD-ZUM-REPO>` durch den tatsächlichen Klon-Pfad ersetzen (z. B.
+`/Users/timospeth/HOLON-DezimalApp`, mit `pwd` im Repo-Ordner prüfen).
+
 ```bash
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.timospeth.berichtsheft.refresh.plist 2>/dev/null
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.timospeth.berichtsheft.refresh.plist
 ```
+
+Das `bootout` vorher ist wichtig — ohne das schlägt `bootstrap` bei einer
+schon einmal registrierten Plist gelegentlich mit "Input/output error" fehl.
+Status prüfen: `launchctl print gui/$(id -u)/com.timospeth.berichtsheft.refresh`
+(zwischen den nächtlichen Läufen ist `state = waiting` normal).
+
+Läuft nachts der Mac gerade im Schlaf, holt macOS den Lauf beim Aufwachen
+nach. Das Skript hat keine Mindestabstand-Sperre mehr — jeder Lauf baut und
+installiert direkt neu, sobald das iPhone erreichbar ist (sonst wird der
+Versuch übersprungen und beim nächsten Mal wiederholt).
 
 Log: `~/Library/Logs/Berichtsheft-refresh.log`. Abschalten:
 `launchctl bootout gui/$(id -u)/com.timospeth.berichtsheft.refresh`

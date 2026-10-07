@@ -4,11 +4,10 @@
 # refresh-install.sh der DezimalApp.
 #
 # Provisioning-Profile eines kostenlosen Personal Teams laufen nach 7 Tagen ab.
-# Dieses Skript baut die App neu und installiert sie, sobald die letzte
-# Installation älter als MAX_AGE ist. LaunchAgent-Vorlage siehe
-# BerichtsheftApp/WALKTHROUGH.md.
-#
-# Manuell erzwingen:  Tools/refresh-install-berichtsheft.sh --force
+# Dieses Skript baut die App neu und installiert sie. Läuft per LaunchAgent
+# jede Nacht um 4 Uhr (StartCalendarInterval) — siehe
+# BerichtsheftApp/WALKTHROUGH.md für die Plist-Vorlage. Kann jederzeit auch
+# manuell aufgerufen werden, es gibt keine Mindestabstand-Sperre mehr.
 #
 
 set -uo pipefail
@@ -21,10 +20,6 @@ DEVICE="00008120-001E35DC22C3A01E"
 DERIVED="$HOME/Library/Caches/Berichtsheft-build"
 STAMP="$HOME/Library/Caches/Berichtsheft-lastinstall"
 LOG="$HOME/Library/Logs/Berichtsheft-refresh.log"
-MAX_AGE=$(( 5 * 24 * 60 * 60 ))   # 5 Tage, zwei Tage Puffer vor Ablauf
-
-FORCE=0
-[[ "${1:-}" == "--force" ]] && FORCE=1
 
 mkdir -p "${LOG:h}" "$DERIVED"
 
@@ -34,24 +29,15 @@ notify() {
     osascript -e "display notification \"$1\" with title \"Berichtsheft\"" >/dev/null 2>&1
 }
 
-# --- 1. Ist ein Refresh fällig? -------------------------------------------
-age=""
-if [[ -f "$STAMP" ]]; then
-    age=$(( $(date +%s) - $(stat -f %m "$STAMP") ))
-    if (( FORCE == 0 && age < MAX_AGE )); then
-        exit 0
-    fi
-fi
+log "--- Nächtlicher Refresh gestartet"
 
-log "--- Refresh fällig (letzte Installation: ${age:-noch nie} s her, force=$FORCE)"
-
-# --- 2. Ist das iPhone erreichbar? ----------------------------------------
+# --- 1. Ist das iPhone erreichbar? ----------------------------------------
 if ! xcrun devicectl device info details --device "$DEVICE" >/dev/null 2>&1; then
-    log "iPhone nicht erreichbar — nächster Versuch beim nächsten Lauf"
+    log "iPhone nicht erreichbar — nächster Versuch morgen Nacht"
     exit 0
 fi
 
-# --- 3. Bauen -------------------------------------------------------------
+# --- 2. Bauen -------------------------------------------------------------
 BUILD_LOG="$DERIVED/last-build.log"
 if ! xcodebuild -project "$PROJECT" \
                 -scheme "$SCHEME" \
@@ -65,7 +51,7 @@ if ! xcodebuild -project "$PROJECT" \
     exit 1
 fi
 
-# --- 4. Installieren ------------------------------------------------------
+# --- 3. Installieren ------------------------------------------------------
 if ! xcrun devicectl device install app \
         --device "$DEVICE" \
         "$DERIVED/Build/Products/Debug-iphoneos/Berichtsheft.app" >> "$BUILD_LOG" 2>&1; then
