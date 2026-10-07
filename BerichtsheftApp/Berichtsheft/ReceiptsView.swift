@@ -94,7 +94,7 @@ struct ReceiptsView: View {
                     .font(.caption)
                     .foregroundStyle(Theme.secondaryText)
             } else {
-                Text("Noch kein Ordner gewählt. Wähle in iCloud Drive deinen Ablage-Ordner (z. B. 01_Jobs/008_Holon) — die Unterordner \(Store.taxFolderName)/\(String(year)) legt die App selbst an.")
+                Text("Noch kein Ordner gewählt. In iCloud Drive zu 01_Jobs/008_Holon navigieren und diesen Ordner auswählen — die Unterordner \(Store.taxFolderName)/\(String(year)) legt die App selbst an. (iOS erlaubt keinen automatisch voreingestellten Ordner, das einmalige Auswählen nach Neuinstallation lässt sich nicht umgehen.)")
                     .font(.subheadline)
                     .foregroundStyle(Theme.secondaryText)
             }
