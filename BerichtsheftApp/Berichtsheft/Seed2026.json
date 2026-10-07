@@ -1019,7 +1019,7 @@
     }
    ],
    "bookings": [],
-   "note": "Dienstreise Hamburg (5 Nächte, firmenbezahlt — keine eigene Buchung) — Hinweis: Excel nennt 6 Dienstreise-Tage, aus dem Text sind nur 5 Wochentage ableitbar (Mo-Fr); 6. Tag evtl. Reisetag am Wochenende, bitte prüfen.",
+   "note": "Dienstreise Hamburg (5 Nächte, firmenbezahlt — keine eigene Buchung). Der 6. Dienstreise-Tag aus der Excel ist der Sonntags-Hinflug (16.08.), der ISO-wochenweise noch zu CW33 zählt (siehe dort, Tag 7: \"Flug Fra -hh\").",
    "homeTrips": 0,
    "commuteDaysOverride": null
   },
