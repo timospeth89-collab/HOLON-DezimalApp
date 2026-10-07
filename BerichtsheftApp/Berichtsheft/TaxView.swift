@@ -40,6 +40,7 @@ struct TaxView: View {
                 }
             }
             .onAppear { ensureHotelRoutes() }
+            .keyboardDoneButton()
         }
     }
 

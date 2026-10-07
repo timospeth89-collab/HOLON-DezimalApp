@@ -195,7 +195,7 @@ struct TaxSettings: Codable, Equatable {
     var homeAddress: String = "Weinbergstr. 27, 63936 Schneeberg"
     var workAddress: String = "Elsener Str. 95, 33102 Paderborn"
     /// Einfache Strecke Wohnung <-> erste Tätigkeitsstätte (Familienheimfahrt).
-    var kmHomeToWork: Double = 0
+    var kmHomeToWork: Double = 231
     /// Je Hotel die einfache Strecke zur ersten Tätigkeitsstätte.
     var hotelRoutes: [HotelRoute] = []
     /// Entfernungspauschale: Satz für die ersten `thresholdKm` Kilometer …
@@ -220,7 +220,7 @@ struct TaxSettings: Codable, Equatable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         homeAddress = try c.decodeIfPresent(String.self, forKey: .homeAddress) ?? "Weinbergstr. 27, 63936 Schneeberg"
         workAddress = try c.decodeIfPresent(String.self, forKey: .workAddress) ?? "Elsener Str. 95, 33102 Paderborn"
-        kmHomeToWork = try c.decodeIfPresent(Double.self, forKey: .kmHomeToWork) ?? 0
+        kmHomeToWork = try c.decodeIfPresent(Double.self, forKey: .kmHomeToWork) ?? 231
         hotelRoutes = try c.decodeIfPresent([HotelRoute].self, forKey: .hotelRoutes) ?? []
         rateFirst = try c.decodeIfPresent(Double.self, forKey: .rateFirst) ?? 0.30
         rateAbove = try c.decodeIfPresent(Double.self, forKey: .rateAbove) ?? 0.38

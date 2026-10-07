@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// HOLON-Look: dunkler Grund, Holon-Grün #29EB9F als Akzent
 /// (gleicher Ton wie AccentColor / App-Icon der DezimalApp).
@@ -41,6 +42,22 @@ struct CardBackground: ViewModifier {
 
 extension View {
     func card() -> some View { modifier(CardBackground()) }
+
+    /// "Fertig"-Taste über der Tastatur für .decimalPad/.numberPad-Felder
+    /// (die haben auf iOS keine eigene Return-Taste). Muss direkt an der
+    /// Ansicht mit den Zahlenfeldern hängen -- an der TabView als Vorfahre
+    /// kommt sie bei manchen Tabs nicht beim System-Keyboard an.
+    func keyboardDoneButton() -> some View {
+        toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Fertig") {
+                    UIApplication.shared.sendAction(
+                        #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
+            }
+        }
+    }
 }
 
 /// Kleines farbiges Kürzel-Badge für die Tagesart (PB, HO, U, …).

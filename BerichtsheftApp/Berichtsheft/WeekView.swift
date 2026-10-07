@@ -141,6 +141,7 @@ struct WeekEditor: View {
         } message: {
             Text(errorMessage ?? "")
         }
+        .keyboardDoneButton()
     }
 
     // MARK: Tage

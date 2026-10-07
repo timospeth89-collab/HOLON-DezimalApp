@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 @main
 struct BerichtsheftApp: App {
@@ -30,18 +29,6 @@ struct RootView: View {
                 .tabItem { Label("Steuer", systemImage: "eurosign.circle") }
             ReceiptsView()
                 .tabItem { Label("Belege", systemImage: "folder") }
-        }
-        .toolbar {
-            // .decimalPad/.numberPad haben keine Return-Taste -- ohne diese
-            // Leiste bleibt die Tastatur bei den km-/€-Feldern offen und
-            // blockiert den Rest der App.
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Fertig") {
-                    UIApplication.shared.sendAction(
-                        #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }
-            }
         }
         .onAppear {
             if !walkthroughSeen { showWalkthrough = true }
