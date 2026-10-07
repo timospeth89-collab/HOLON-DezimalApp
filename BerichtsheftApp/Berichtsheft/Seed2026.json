@@ -1206,7 +1206,7 @@
      "hotel": "InterCity (Hamburg)",
      "nights": 3,
      "amount": 68.4,
-     "receiptFile": ""
+     "receiptFile": "2026-CW38_InterCityHamburg_01.pdf"
     }
    ],
    "note": "",
@@ -1304,7 +1304,7 @@
     }
    ],
    "bookings": [],
-   "note": "Noch nicht in der Excel bestätigt (Zeile war beim Import leer), bitte gegenprüfen.",
+   "note": "Keine Hotelkosten -- Hamburg war Dienstreise (firmenbezahlt), restliche Tage HO (vom Nutzer bestätigt).",
    "homeTrips": 0,
    "commuteDaysOverride": null
   },
@@ -1348,7 +1348,7 @@
     }
    ],
    "bookings": [],
-   "note": "Noch nicht in der Excel bestätigt (Zeile war beim Import leer), bitte gegenprüfen.",
+   "note": "Keine Hotelkosten -- Hamburg war Dienstreise (firmenbezahlt), restliche Tage HO (vom Nutzer bestätigt).",
    "homeTrips": 0,
    "commuteDaysOverride": null
   }
