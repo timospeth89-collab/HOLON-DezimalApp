@@ -140,7 +140,10 @@ struct Week: Codable, Equatable {
     var primaryHotel: String { bookings.first(where: { !$0.hotel.isEmpty })?.hotel ?? "" }
 
     /// Prüfsumme: Mo–Fr sollen immer ein Attribut (≠ frei) haben.
-    var weekdaysFilled: Int { days.prefix(5).filter { $0.kind != .frei }.count }
+    /// "Erledigt" heißt: der Tag hat eine Art ungleich frei, ODER bei frei
+    /// wenigstens eine Tätigkeits-/Ort-Notiz (z. B. "vor Jobbeginn") --
+    /// sonst zählt ein bewusst begründetes frei fälschlich als vergessen.
+    var weekdaysFilled: Int { days.prefix(5).filter { !$0.isEmpty }.count }
     var isComplete: Bool { weekdaysFilled == 5 }
 
     /// Hotelspalte wie in der Excel: Hotelname(n), oder Wochen-Art wenn kein Hotel.
