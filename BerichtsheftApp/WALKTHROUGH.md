@@ -75,11 +75,22 @@ dabei werden sie gleich nach Schema `CW17_SleepInn_01.pdf` umbenannt.
 
 ## 4. Auto-Refresh: jede Nacht um 4 Uhr
 
+**Einfachster Weg:** einmal `zsh Tools/install-nightly-refresh.sh` ausführen.
+Das schreibt die Plist mit dem richtigen Repo-Pfad, registriert sie und zeigt
+den Status. Das Skript holt vor jedem Lauf per `git pull` den neuesten `main`,
+wartet bis zu 5 Minuten aufs iPhone im WLAN und warnt per Mitteilung, wenn die
+letzte erfolgreiche Installation 5 Tage oder älter ist. Voraussetzungen: Mac
+nachts wach (`sudo pmset repeat wakeorpoweron MTWRFSU 03:55:00`), in Xcode unter
+*Window > Devices and Simulators* beim iPhone „Connect via network" aktiv,
+iPhone nachts im WLAN. Repo bitte nicht in iCloud Drive ablegen.
+
+Manuell testen:
+
 ```bash
-Tools/refresh-install-berichtsheft.sh   # einmal manuell testen
+Tools/refresh-install-berichtsheft.sh
 ```
 
-Dann als LaunchAgent `~/Library/LaunchAgents/com.timospeth.berichtsheft.refresh.plist`:
+Von Hand als LaunchAgent `~/Library/LaunchAgents/com.timospeth.berichtsheft.refresh.plist`:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
