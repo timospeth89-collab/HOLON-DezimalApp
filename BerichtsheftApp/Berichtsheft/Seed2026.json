@@ -1571,6 +1571,57 @@
    "note": "Keine Hotelangabe in der Notiz -- bei Übernachtung bitte Buchung ergänzen.",
    "homeTrips": 0,
    "commuteDaysOverride": null
+  },
+  {
+   "cw": 48,
+   "days": [
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [
+    {
+     "hotel": "B&B",
+     "nights": 1,
+     "amount": 66.95,
+     "receiptFile": "2026-CW48_BaB_01.pdf"
+    }
+   ],
+   "note": "B&B 66,95 EUR (PayPal 23.11., Bestellnr. RLPK2WWHJKQZQHR9), laut Nutzer für Donnerstag 26.11. -- 1 Nacht angenommen. Tage dieser Woche noch nicht erfasst. PayPal-Beleg bitte als 2026-CW48_BaB_01.pdf ablegen.",
+   "homeTrips": 1,
+   "commuteDaysOverride": null
   }
  ]
 }

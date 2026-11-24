@@ -275,7 +275,8 @@ struct YearData: Codable, Equatable {
 
     /// Ergänzt Seed-Daten, ohne Eigenes zu überschreiben: fehlende oder ganz
     /// leere Wochen kommen komplett dazu, bei vorhandenen Wochen werden nur
-    /// leere Tage gefüllt. Buchungen und Notizen bestehender Wochen bleiben.
+    /// leere Tage gefüllt und Buchungen nur dann übernommen, wenn die Woche noch
+    /// keine hat. Notizen und vorhandene Buchungen bleiben unangetastet.
     mutating func mergeMissing(from seed: YearData) {
         for seedWeek in seed.weeks {
             guard let i = weeks.firstIndex(where: { $0.cw == seedWeek.cw }) else {
@@ -288,6 +289,10 @@ struct YearData: Codable, Equatable {
             }
             for d in 0..<7 where weeks[i].days[d].isEmpty && !seedWeek.days[d].isEmpty {
                 weeks[i].days[d] = seedWeek.days[d]
+            }
+            if weeks[i].bookings.isEmpty && !seedWeek.bookings.isEmpty {
+                weeks[i].bookings = seedWeek.bookings
+                if weeks[i].homeTrips == 0 { weeks[i].homeTrips = seedWeek.homeTrips }
             }
         }
     }
