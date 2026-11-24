@@ -1392,7 +1392,7 @@
     }
    ],
    "bookings": [],
-   "note": "Notiz \"HH\" = Hamburg: Mo-Mi als Dienstreise (firmenbezahlt) erfasst, keine Hotelkosten. Bitte bestätigen.",
+   "note": "Dienstreise Hamburg (vom Nutzer bestätigt), firmenbezahlt -- keine Hotelkosten.",
    "homeTrips": 0,
    "commuteDaysOverride": null
   },
@@ -1459,9 +1459,9 @@
      "location": ""
     },
     {
-     "kind": "frei",
-     "activity": "DA pudo alignment",
-     "location": ""
+     "kind": "DR",
+     "activity": "pudo alignment",
+     "location": "Darmstadt"
     },
     {
      "kind": "HO",
@@ -1480,7 +1480,7 @@
     }
    ],
    "bookings": [],
-   "note": "Notiz \"inter city\": Hotelbuchung und Beleg fehlen noch. KLÄREN: Do \"DA pudo alignment\" -- PB oder HO? Art bitte setzen.",
+   "note": "Übernachtung Mo-Di in Paderborn (1 Nacht, InterCity laut Notiz) -- Betrag und Beleg fehlen noch. Do: Dienstreise Darmstadt (firmenbezahlt).",
    "homeTrips": 0,
    "commuteDaysOverride": null
   },
