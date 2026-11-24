@@ -98,6 +98,16 @@ Gespeichert wird lokal als JSON (Application Support), unabhängig vom
 iCloud-Ordner — die App funktioniert also auch offline/ohne gewählten Ordner;
 nur Beleg-Ablage und Export brauchen ihn.
 
+**Auto-Backup:** Sobald ein iCloud-Ordner gewählt ist, schreibt die App 3
+Sekunden nach jeder Änderung `Berichtsheft_Backup.json` (alle Jahre +
+Einstellungen) und die CSV-Dateien in den Jahresordner. Im Tab „Belege" zeigt
+die Karte „Backup" den Stand, „Jetzt sichern" erzwingt eine Sicherung und
+„Backup einlesen" stellt aus `Berichtsheft_Backup.json` oder einem
+Jahres-Export (`Berichtsheft_<Jahr>.json`) wieder her (der bisherige Stand
+bleibt als `vor-wiederherstellung.json` im App-Ordner). Nach einer
+Neuinstallation überschreibt das Auto-Backup ein bereits vorhandenes Backup
+nicht, bis du wiederhergestellt oder bewusst „Jetzt sichern" gedrückt hast.
+
 Bei jedem Start werden die mitgelieferten 2026-Daten (`Seed2026.json` im
 Bundle, ab CW14) eingemischt: Fehlende Wochen und leere Tage werden ergänzt,
 bereits erfasste Einträge bleiben unangetastet — so kommen neue Wochen per

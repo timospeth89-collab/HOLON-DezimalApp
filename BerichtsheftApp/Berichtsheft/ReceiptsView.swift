@@ -13,12 +13,16 @@ struct ReceiptsView: View {
     @State private var previewURL: URL?
     @State private var errorMessage: String?
     @State private var reminderOn = Reminders.isEnabled
+    @State private var showBackupPicker = false
+    @State private var showRestoreConfirm = false
+    @State private var pendingBackup: Store.BackupContent?
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
                     folderCard
+                    backupCard
                     reminderCard
                     filesCard
                 }
@@ -107,6 +111,69 @@ struct ReceiptsView: View {
             }
         }
         .card()
+    }
+
+    // MARK: Backup
+
+    private var lastBackupText: String {
+        if let date = store.lastBackup {
+            return "Letzte Sicherung: " + date.formatted(date: .abbreviated, time: .shortened)
+        }
+        return store.folderName == nil
+            ? "Kein iCloud-Ordner gewählt, es wird nichts gesichert."
+            : "Seit dem App-Start noch nichts gesichert."
+    }
+
+    private var backupCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Backup").font(.headline)
+            Text("Nach jeder Änderung schreibt die App \(Store.backupFileName) und die CSV-Dateien in den Jahresordner.")
+                .font(.caption)
+                .foregroundStyle(Theme.secondaryText)
+            Text(lastBackupText).font(.subheadline)
+            if store.backupPaused {
+                Text("Neu installiert: Im Ordner liegt schon ein Backup, es wird nicht automatisch überschrieben. Erst Backup einlesen, oder mit Jetzt sichern bewusst überschreiben.")
+                    .font(.caption)
+                    .foregroundStyle(Color(red: 1.0, green: 0.72, blue: 0.3))
+            }
+            if let error = store.lastBackupError {
+                Text(error).font(.caption).foregroundStyle(.red)
+            }
+            HStack(spacing: 20) {
+                Button {
+                    store.backupNow()
+                    refresh()
+                } label: {
+                    Label("Jetzt sichern", systemImage: "arrow.up.doc")
+                }
+                Button {
+                    showBackupPicker = true
+                } label: {
+                    Label("Backup einlesen", systemImage: "arrow.down.doc")
+                }
+            }
+            .font(.subheadline.bold())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
+        .fileImporter(isPresented: $showBackupPicker, allowedContentTypes: [.json]) { result in
+            do {
+                let url = try result.get()
+                pendingBackup = try store.readBackup(from: url)
+                showRestoreConfirm = true
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+        .alert("Backup einlesen?", isPresented: $showRestoreConfirm, presenting: pendingBackup) { content in
+            Button("Ersetzen", role: .destructive) {
+                store.restore(content)
+                refresh()
+            }
+            Button("Abbrechen", role: .cancel) {}
+        } message: { content in
+            Text("\(content.summary). Die aktuellen Daten werden ersetzt, eine Sicherheitskopie bleibt auf dem Gerät.")
+        }
     }
 
     // MARK: Erinnerung

@@ -13,7 +13,22 @@ final class Store: ObservableObject {
     private static let bookmarkKey = "berichtsheft.folderBookmark"
     static let taxFolderName = "SteuerHotelFahrtkosten"
 
+    /// Auto-Backup: Stand der letzten Sicherung bzw. warum sie pausiert.
+    @Published var lastBackup: Date?
+    @Published var lastBackupError: String?
+    @Published var backupPaused = false
+
+    private static let backupGuardKey = "berichtsheft.backupGuard"
+    static let backupFileName = "Berichtsheft_Backup.json"
+    private var backupWork: DispatchWorkItem?
+
     init() {
+        // Frische Installation (keine lokale Datei): ein schon vorhandenes Backup
+        // im iCloud-Ordner darf nicht automatisch mit dem leeren Stand überschrieben
+        // werden -- erst wiederherstellen oder bewusst "Jetzt sichern".
+        if !FileManager.default.fileExists(atPath: localFile.path) {
+            UserDefaults.standard.set(true, forKey: Store.backupGuardKey)
+        }
         load()
         importSeedIfNeeded()
         folderName = resolveBaseFolder()?.lastPathComponent
@@ -56,6 +71,104 @@ final class Store: ObservableObject {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         guard let raw = try? encoder.encode(data) else { return }
         try? raw.write(to: localFile, options: .atomic)
+        scheduleBackup()
+    }
+
+    // MARK: - Auto-Backup und Wiederherstellung
+
+    /// Schreibt 3 Sekunden nach der letzten Änderung das Komplett-Backup
+    /// (alle Jahre + Einstellungen) sowie die CSV-Dateien in den iCloud-Ordner.
+    private func scheduleBackup() {
+        guard resolveBaseFolder() != nil else { return }
+        backupWork?.cancel()
+        let work = DispatchWorkItem { [weak self] in self?.writeBackup(force: false) }
+        backupWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+    }
+
+    /// Ausdrücklicher Nutzerwunsch: sofort sichern und ein pausiertes Auto-Backup
+    /// wieder freigeben.
+    func backupNow() {
+        backupWork?.cancel()
+        writeBackup(force: true)
+    }
+
+    private func backupExists(in dir: URL) -> Bool {
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: dir.path)) ?? []
+        // Nicht heruntergeladene iCloud-Dateien erscheinen als ".<Name>.icloud".
+        return names.contains { $0 == Store.backupFileName || $0 == ".\(Store.backupFileName).icloud" }
+    }
+
+    private func writeBackup(force: Bool) {
+        guard resolveBaseFolder() != nil else { return }
+        let year = CW.currentYear
+        do {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            let raw = try encoder.encode(data)
+            let guarded = UserDefaults.standard.bool(forKey: Store.backupGuardKey)
+            let blocked = try withYearFolder(year: year) { dir -> Bool in
+                if guarded && !force && backupExists(in: dir) { return true }
+                try raw.write(to: dir.appendingPathComponent(Store.backupFileName), options: .atomic)
+                return false
+            }
+            if blocked {
+                backupPaused = true
+                return
+            }
+            UserDefaults.standard.set(false, forKey: Store.backupGuardKey)
+            backupPaused = false
+            _ = try exportAll(year: year)
+            lastBackup = Date()
+            lastBackupError = nil
+        } catch {
+            lastBackupError = error.localizedDescription
+        }
+    }
+
+    enum BackupContent {
+        case full(AppData)
+        case year(YearData)
+
+        var summary: String {
+            switch self {
+            case .full(let app):
+                let weeks = app.years.reduce(0) { $0 + $1.weeks.count }
+                return "\(weeks) Wochen in \(app.years.count) Jahr(en) samt Einstellungen"
+            case .year(let y):
+                return "\(y.weeks.count) Wochen für \(y.year)"
+            }
+        }
+    }
+
+    /// Liest ein Komplett-Backup (Berichtsheft_Backup.json) oder den
+    /// Jahres-Export (Berichtsheft_<Jahr>.json).
+    func readBackup(from url: URL) throws -> BackupContent {
+        let ok = url.startAccessingSecurityScopedResource()
+        defer { if ok { url.stopAccessingSecurityScopedResource() } }
+        let raw = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        // YearData zuerst: es verlangt den Schlüssel "year" und scheitert bei
+        // einem Komplett-Backup; AppData würde dagegen jedes Objekt akzeptieren.
+        if let year = try? decoder.decode(YearData.self, from: raw) { return .year(year) }
+        if let app = try? decoder.decode(AppData.self, from: raw), !app.years.isEmpty { return .full(app) }
+        throw StoreError.invalidBackup
+    }
+
+    /// Ersetzt die lokalen Daten durch das Backup. Der bisherige Stand bleibt
+    /// als Sicherheitskopie im App-Ordner (vor-wiederherstellung.json).
+    func restore(_ content: BackupContent) {
+        let safety = localFile.deletingLastPathComponent()
+            .appendingPathComponent("vor-wiederherstellung.json")
+        try? FileManager.default.removeItem(at: safety)
+        try? FileManager.default.copyItem(at: localFile, to: safety)
+        switch content {
+        case .full(let app): data = app
+        case .year(let year): data.update(year)
+        }
+        UserDefaults.standard.set(false, forKey: Store.backupGuardKey)
+        backupPaused = false
+        save()
     }
 
     // MARK: - Wochen lesen/schreiben
@@ -170,6 +283,7 @@ final class Store: ObservableObject {
         let bookmark = try url.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
         UserDefaults.standard.set(bookmark, forKey: Store.bookmarkKey)
         folderName = url.lastPathComponent
+        scheduleBackup()
     }
 
     private func resolveBaseFolder() -> URL? {
@@ -412,10 +526,13 @@ final class Store: ObservableObject {
 
     enum StoreError: LocalizedError {
         case noFolder
+        case invalidBackup
         var errorDescription: String? {
             switch self {
             case .noFolder:
                 return "Kein iCloud-Ordner gewählt. Im Tab „Belege“ zuerst den Ordner auswählen."
+            case .invalidBackup:
+                return "Die Datei ist kein gültiges Berichtsheft-Backup."
             }
         }
     }
