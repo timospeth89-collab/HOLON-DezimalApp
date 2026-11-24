@@ -55,7 +55,7 @@ Die App zeigt beim ersten Start einen Walkthrough. Danach:
 2. **Ebenfalls dort: Fahrtstrecke** — die einfachen km
    Weinbergstr. 27 → Elsener Str. 95, Paderborn einmal eintragen
    (aus Apple/Google Maps ablesen).
-3. **Tab „Auswertung"** — CW14–33 aus deiner Excel sind schon drin,
+3. **Tab „Auswertung"** — Deine Wochen ab CW14 sind schon drin,
    Summen stimmen mit der Excel-Summenzeile überein (27 Nächte,
    1629,49 €, PB 38, HO 25, FT 6, U 7, EZ 20, KiKr 2). Einmal
    **Export** drücken → CSV + JSON liegen im iCloud-Ordner.

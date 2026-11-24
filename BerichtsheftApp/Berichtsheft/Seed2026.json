@@ -1322,17 +1322,17 @@
      "location": ""
     },
     {
-     "kind": "frei",
+     "kind": "HO",
      "activity": "",
      "location": ""
     },
     {
-     "kind": "frei",
+     "kind": "HO",
      "activity": "",
      "location": ""
     },
     {
-     "kind": "frei",
+     "kind": "HO",
      "activity": "",
      "location": ""
     },
@@ -1348,7 +1348,227 @@
     }
    ],
    "bookings": [],
-   "note": "Keine Hotelkosten -- Hamburg war Dienstreise (firmenbezahlt), restliche Tage HO (vom Nutzer bestätigt).",
+   "note": "Keine Hotelkosten -- Homeoffice-Woche ohne Reise.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 42,
+   "days": [
+    {
+     "kind": "DR",
+     "activity": "pudo workshop",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "pudo workshop",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "DR",
+     "activity": "pudo workshop",
+     "location": "Hamburg"
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Notiz \"HH\" = Hamburg: Mo-Mi als Dienstreise (firmenbezahlt) erfasst, keine Hotelkosten. Bitte bestätigen.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 43,
+   "days": [
+    {
+     "kind": "PB",
+     "activity": "tcu test v111",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "tcu test v111",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Notiz \"inter city?\": Hotelbuchung (Nächte/Betrag) und Beleg fehlen noch.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 44,
+   "days": [
+    {
+     "kind": "PB",
+     "activity": "tcu test v111",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "tcu test v111",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "DA pudo alignment",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Notiz \"inter city\": Hotelbuchung und Beleg fehlen noch. KLÄREN: Do \"DA pudo alignment\" -- PB oder HO? Art bitte setzen.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 45,
+   "days": [
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "PB",
+     "activity": "111 sanity TC10",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "112/114 vehicle release",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "112/114 vehicle release",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Notiz \"inter city\": Hotelbuchung und Beleg fehlen noch.",
+   "homeTrips": 0,
+   "commuteDaysOverride": null
+  },
+  {
+   "cw": 46,
+   "days": [
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "HO",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "PB",
+     "activity": "",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "PB",
+     "activity": "",
+     "location": "Paderborn"
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    },
+    {
+     "kind": "frei",
+     "activity": "",
+     "location": ""
+    }
+   ],
+   "bookings": [],
+   "note": "Keine Hotelangabe in der Notiz -- bei Übernachtung bitte Buchung ergänzen.",
    "homeTrips": 0,
    "commuteDaysOverride": null
   }

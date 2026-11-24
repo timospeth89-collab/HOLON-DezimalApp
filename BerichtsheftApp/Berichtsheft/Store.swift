@@ -19,17 +19,21 @@ final class Store: ObservableObject {
         folderName = resolveBaseFolder()?.lastPathComponent
     }
 
-    /// Beim allerersten Start die 2026-Daten aus der bisherigen Excel
-    /// (Berichtsheft - Tabelle.xlsx, CW14–33) vorbefüllen.
+    /// Bei jedem Start die mitgelieferten 2026-Daten (Seed2026.json) einmischen:
+    /// Fehlendes wird ergänzt, bereits erfasste Einträge bleiben unangetastet.
+    /// So kommen neue Wochen per App-Update aufs Gerät, ohne die App löschen
+    /// zu müssen. Ein bewusst geleerter Tag wird dabei wieder gefüllt.
     private func importSeedIfNeeded() {
-        let flag = "berichtsheft.seedImported"
-        guard !UserDefaults.standard.bool(forKey: flag), data.years.isEmpty,
-              let url = Bundle.main.url(forResource: "Seed2026", withExtension: "json"),
+        guard let url = Bundle.main.url(forResource: "Seed2026", withExtension: "json"),
               let raw = try? Data(contentsOf: url),
               let seed = try? JSONDecoder().decode(YearData.self, from: raw) else { return }
-        data.update(seed)
-        UserDefaults.standard.set(true, forKey: flag)
-        save()
+        let before = data
+        if let i = data.years.firstIndex(where: { $0.year == seed.year }) {
+            data.years[i].mergeMissing(from: seed)
+        } else {
+            data.update(seed)
+        }
+        if data != before { save() }
     }
 
     // MARK: - Lokale Persistenz

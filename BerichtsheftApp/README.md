@@ -98,9 +98,11 @@ Gespeichert wird lokal als JSON (Application Support), unabhängig vom
 iCloud-Ordner — die App funktioniert also auch offline/ohne gewählten Ordner;
 nur Beleg-Ablage und Export brauchen ihn.
 
-Beim allerersten Start werden die 2026-Daten aus der bisherigen Excel
-(CW14–33, `Seed2026.json` im Bundle) vorbefüllt — die Wochensummen stimmen
-mit der Excel-Summenzeile überein. Beim ersten Start zeigt die App außerdem
+Bei jedem Start werden die mitgelieferten 2026-Daten (`Seed2026.json` im
+Bundle, ab CW14) eingemischt: Fehlende Wochen und leere Tage werden ergänzt,
+bereits erfasste Einträge bleiben unangetastet — so kommen neue Wochen per
+App-Update aufs Gerät. Die Wochensummen bis CW39 stimmen mit der
+Excel-Summenzeile überein. Beim ersten Start zeigt die App außerdem
 einen Walkthrough (über „?" im Tab „Woche" jederzeit wieder aufrufbar).
 
 Installation als Vorabversion: siehe [WALKTHROUGH.md](WALKTHROUGH.md).
@@ -115,7 +117,7 @@ Installation als Vorabversion: siehe [WALKTHROUGH.md](WALKTHROUGH.md).
 - `Berichtsheft/ReceiptsView.swift` — Ordner, Erinnerung, Belegliste
 - `Berichtsheft/WalkthroughView.swift` — Onboarding
 - `Berichtsheft/Theme.swift` — HOLON-Look
-- `Berichtsheft/Seed2026.json` — Vorbefüllung CW14–33 aus der Excel
+- `Berichtsheft/Seed2026.json` — Vorbefüllung ab CW14 aus OneNote + Excel
 
 ## Bauen
 

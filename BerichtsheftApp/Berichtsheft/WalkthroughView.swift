@@ -9,7 +9,7 @@ struct WalkthroughView: View {
     private let pages: [(icon: String, title: String, text: String)] = [
         ("book.closed.fill",
          "Berichtsheft",
-         "Deine Wochen-/Hotelabrechnung: OneNote-Liste und Excel in einer App — Belege fürs Finanzamt inklusive.\n\nCW14–33 aus deiner bisherigen Excel sind schon vorbefüllt."),
+         "Deine Wochen-/Hotelabrechnung: OneNote-Liste und Excel in einer App — Belege fürs Finanzamt inklusive.\n\nDeine bisherigen Wochen ab CW14 sind schon vorbefüllt."),
         ("calendar",
          "Woche erfassen",
          "Pro Kalenderwoche 7 Tage: Art (PB vor Ort, HO, Feiertag, Urlaub, EZ, Kind krank, Krank), Tätigkeit und Ort.\n\nDas ✓/⚠︎ oben zeigt die Prüfsumme: Mo–Fr sollen immer 5 Tage ein Attribut haben.\n\n„Ausfüllen“ setzt Mo–Fr auf einen Schlag."),

@@ -272,6 +272,25 @@ struct YearData: Codable, Equatable {
             weeks.sort { $0.cw < $1.cw }
         }
     }
+
+    /// Ergänzt Seed-Daten, ohne Eigenes zu überschreiben: fehlende oder ganz
+    /// leere Wochen kommen komplett dazu, bei vorhandenen Wochen werden nur
+    /// leere Tage gefüllt. Buchungen und Notizen bestehender Wochen bleiben.
+    mutating func mergeMissing(from seed: YearData) {
+        for seedWeek in seed.weeks {
+            guard let i = weeks.firstIndex(where: { $0.cw == seedWeek.cw }) else {
+                update(seedWeek)
+                continue
+            }
+            if weeks[i].isEmpty {
+                weeks[i] = seedWeek
+                continue
+            }
+            for d in 0..<7 where weeks[i].days[d].isEmpty && !seedWeek.days[d].isEmpty {
+                weeks[i].days[d] = seedWeek.days[d]
+            }
+        }
+    }
 }
 
 struct AppData: Codable, Equatable {
